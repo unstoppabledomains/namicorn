@@ -12,21 +12,24 @@ export type CnsSupportedNetworks = typeof CnsSupportedNetwork.type;
 export type EnsSupportedNetworks = typeof EnsSupportedNetwork.type;
 export type ZnsSupportedNetworks = typeof ZnsSupportedNetwork.type;
 
-export type Api = { api: true, url?: string };
+export type Api = {api: true; url?: string};
 
 type NamingServiceSource = {url?: string} | {provider?: Provider};
 
-export type CnsSource =
-  NamingServiceSource &
-  {network: CnsSupportedNetworks, proxyReaderAddress?: string}
+export type CnsSource = NamingServiceSource & {
+  network: CnsSupportedNetworks;
+  proxyReaderAddress?: string;
+};
 
-export type EnsSource =
-  NamingServiceSource &
-  {network: EnsSupportedNetworks, registryAddress?: string}
+export type EnsSource = NamingServiceSource & {
+  network: EnsSupportedNetworks;
+  registryAddress?: string;
+};
 
-export type ZnsSource =
-  NamingServiceSource &
-  {network: ZnsSupportedNetworks, registryAddress?: string}
+export type ZnsSource = NamingServiceSource & {
+  network: ZnsSupportedNetworks;
+  registryAddress?: string;
+};
 
 export type SourceConfig = {
   cns?: CnsSource | Api;
@@ -43,9 +46,9 @@ export enum NamingServiceName {
 export type ResolutionMethod = NamingServiceName | 'UDAPI';
 
 export type AutoNetworkConfigs = {
-  ens?: { url: string } | { provider: Provider },
-  cns?: { url: string } | { provider: Provider }
-}
+  ens?: {url: string} | {provider: Provider};
+  cns?: {url: string} | {provider: Provider};
+};
 
 /**
  * ResolutionResulution
@@ -127,7 +130,7 @@ export type NamehashOptions = {
   readonly prefix?: boolean;
 };
 
-export const NamehashOptionsDefault = { format: 'hex', prefix: true } as const;
+export const NamehashOptionsDefault = {format: 'hex', prefix: true} as const;
 
 export enum DnsRecordType {
   A = 'A',

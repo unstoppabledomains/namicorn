@@ -1,18 +1,17 @@
-import DnsRecordsError, { DnsRecordsErrorCode } from "../errors/dnsRecordsError";
-import { CryptoRecords, DnsRecord, DnsRecordType } from "../types/publicTypes";
+import DnsRecordsError, {DnsRecordsErrorCode} from '../errors/dnsRecordsError';
+import {CryptoRecords, DnsRecord, DnsRecordType} from '../types/publicTypes';
 export default class DnsUtils {
-
-  static readonly DefaultTtl: number = 300; // 5 minutes 
+  static readonly DefaultTtl: number = 300; // 5 minutes
 
   public toList(record: CryptoRecords): DnsRecord[] {
     const dnsTypes = this.getAllDnsTypes(record);
     return ([] as DnsRecord[]).concat(
-      ...dnsTypes.map(type => this.constructDnsRecords(record, type))
+      ...dnsTypes.map((type) => this.constructDnsRecords(record, type)),
     );
   }
 
   public toCrypto(records: DnsRecord[]): CryptoRecords {
-    const cryptoRecords:CryptoRecords = {};
+    const cryptoRecords: CryptoRecords = {};
     for (const record of records) {
       const {type, TTL, data} = record;
       const ttlInRecord = this.getJsonNumber(cryptoRecords[`dns.${type}.ttl`]);
@@ -26,24 +25,34 @@ export default class DnsUtils {
       }
 
       if (!!ttlInRecord && ttlInRecord !== TTL) {
-        throw new DnsRecordsError(DnsRecordsErrorCode.InconsistentTtl, {recordType: type});
+        throw new DnsRecordsError(DnsRecordsErrorCode.InconsistentTtl, {
+          recordType: type,
+        });
       }
     }
     return cryptoRecords;
   }
 
-  private protectFromCorruptRecord(rawRecord: string | undefined, type: DnsRecordType): string[] | undefined {
+  private protectFromCorruptRecord(
+    rawRecord: string | undefined,
+    type: DnsRecordType,
+  ): string[] | undefined {
     try {
       return rawRecord ? JSON.parse(rawRecord) : undefined;
-    }catch(err) {
+    } catch (err) {
       if (err instanceof SyntaxError) {
-        throw new DnsRecordsError(DnsRecordsErrorCode.DnsRecordCorrupted, {recordType: type});
+        throw new DnsRecordsError(DnsRecordsErrorCode.DnsRecordCorrupted, {
+          recordType: type,
+        });
       }
       throw err;
     }
   }
-  
-  private getJsonArray(cryptoRecrods:CryptoRecords, key: string): string[] | undefined {
+
+  private getJsonArray(
+    cryptoRecrods: CryptoRecords,
+    key: string,
+  ): string[] | undefined {
     const rawRecord = cryptoRecrods[key];
     const type = key.split('.')[1] as DnsRecordType;
     return this.protectFromCorruptRecord(rawRecord, type);
@@ -55,7 +64,7 @@ export default class DnsUtils {
 
   private getAllDnsTypes(records: CryptoRecords): DnsRecordType[] {
     const keys = new Set<DnsRecordType>();
-    Object.keys(records).forEach(key => {
+    Object.keys(records).forEach((key) => {
       const chunks = key.split('.');
       const type = chunks[1] && chunks[1] !== 'ttl';
       if (type) {
@@ -65,7 +74,10 @@ export default class DnsUtils {
     return Array.from(keys);
   }
 
-  private constructDnsRecords(cryptoData: CryptoRecords, type: DnsRecordType ): DnsRecord[] {
+  private constructDnsRecords(
+    cryptoData: CryptoRecords,
+    type: DnsRecordType,
+  ): DnsRecord[] {
     const TTL = this.parseTtl(cryptoData, type);
     const jsonValueString = cryptoData[`dns.${type}`];
     if (!jsonValueString) {
@@ -75,7 +87,7 @@ export default class DnsUtils {
     if (!this.isStringArray(typeData)) {
       return [];
     }
-    return typeData.map(data => ({TTL, data, type}));
+    return typeData.map((data) => ({TTL, data, type}));
   }
 
   private parseTtl(data: CryptoRecords, type: DnsRecordType): number {
@@ -105,7 +117,7 @@ export default class DnsUtils {
 
   private isStringArray(value: any): value is string[] {
     if (value instanceof Array) {
-      return value.every(item => typeof item === 'string');
+      return value.every((item) => typeof item === 'string');
     }
     return false;
   }

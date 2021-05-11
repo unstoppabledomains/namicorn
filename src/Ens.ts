@@ -1,17 +1,28 @@
-import { default as ensInterface } from './contracts/ens/ens';
-import { default as resolverInterface } from './contracts/ens/resolver';
-import { BlockhanNetworkUrlMap, EnsSupportedNetwork, EthCoinIndex, hasProvider } from './types';
-import { ResolutionError, ResolutionErrorCode } from './errors/resolutionError';
+import {default as ensInterface} from './contracts/ens/ens';
+import {default as resolverInterface} from './contracts/ens/resolver';
+import {
+  BlockhanNetworkUrlMap,
+  EnsSupportedNetwork,
+  EthCoinIndex,
+  hasProvider,
+} from './types';
+import {ResolutionError, ResolutionErrorCode} from './errors/resolutionError';
 import EthereumContract from './contracts/EthereumContract';
 import EnsNetworkMap from 'ethereum-ens-network-map';
-import { EnsSource, NamingServiceName, Provider } from './types/publicTypes';
-import { constructRecords, EthereumNetworksInverted, isNullAddress } from './utils';
+import {EnsSource, NamingServiceName, Provider} from './types/publicTypes';
+import {
+  constructRecords,
+  EthereumNetworksInverted,
+  isNullAddress,
+} from './utils';
 import FetchProvider from './FetchProvider';
-import { eip137Childhash, eip137Namehash } from './utils/namehash';
-import { NamingService } from './NamingService';
-import ConfigurationError, { ConfigurationErrorCode } from './errors/configurationError';
-import { EthereumNetworks } from './utils';
-import { requireOrFail } from './utils/requireOrFail';
+import {eip137Childhash, eip137Namehash} from './utils/namehash';
+import {NamingService} from './NamingService';
+import ConfigurationError, {
+  ConfigurationErrorCode,
+} from './errors/configurationError';
+import {EthereumNetworks} from './utils';
+import {requireOrFail} from './utils/requireOrFail';
 
 /**
  * @internal
@@ -19,7 +30,7 @@ import { requireOrFail } from './utils/requireOrFail';
 export default class Ens extends NamingService {
   static readonly UrlMap: BlockhanNetworkUrlMap = {
     1: 'https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee',
-    3: 'https://ropsten.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee'
+    3: 'https://ropsten.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee',
   };
 
   readonly name = NamingServiceName.ENS;
@@ -33,7 +44,7 @@ export default class Ens extends NamingService {
     if (!source) {
       source = {
         url: Ens.UrlMap[1],
-        network: "mainnet",
+        network: 'mainnet',
       };
     }
     if (!source.network || !EnsSupportedNetwork.guard(source.network)) {
@@ -43,31 +54,41 @@ export default class Ens extends NamingService {
     }
     this.network = EthereumNetworks[source.network];
     this.url = source['url'] || Ens.UrlMap[this.network];
-    this.provider = source['provider'] || new FetchProvider(this.name, this.url!);
-    const registryAddress = source['registryAddress'] || EnsNetworkMap[this.network];
+    this.provider =
+      source['provider'] || new FetchProvider(this.name, this.url!);
+    const registryAddress =
+      source['registryAddress'] || EnsNetworkMap[this.network];
     this.readerContract = new EthereumContract(
       ensInterface,
       registryAddress,
-      this.provider
+      this.provider,
     );
   }
 
-  static async autoNetwork(config: { url: string } | { provider: Provider }): Promise<Ens> {
+  static async autoNetwork(
+    config: {url: string} | {provider: Provider},
+  ): Promise<Ens> {
     let provider: Provider;
 
     if (hasProvider(config)) {
-      provider = config.provider; 
+      provider = config.provider;
     } else {
       if (!config.url) {
-        throw new ConfigurationError(ConfigurationErrorCode.UnspecifiedUrl, {method: NamingServiceName.ENS});
+        throw new ConfigurationError(ConfigurationErrorCode.UnspecifiedUrl, {
+          method: NamingServiceName.ENS,
+        });
       }
       provider = FetchProvider.factory(NamingServiceName.ENS, config.url);
     }
 
-    const networkId = await provider.request({method: "net_version"}) as number;
+    const networkId = (await provider.request({
+      method: 'net_version',
+    })) as number;
     const networkName = EthereumNetworksInverted[networkId];
     if (!networkName || !EnsSupportedNetwork.guard(networkName)) {
-      throw new ConfigurationError(ConfigurationErrorCode.UnsupportedNetwork, {method: NamingServiceName.ENS});
+      throw new ConfigurationError(ConfigurationErrorCode.UnsupportedNetwork, {
+        method: NamingServiceName.ENS,
+      });
     }
     return new this({network: networkName, provider: provider});
   }
@@ -78,7 +99,9 @@ export default class Ens extends NamingService {
 
   namehash(domain: string): string {
     if (!this.isSupportedDomain(domain)) {
-      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
+        domain,
+      });
     }
     return eip137Namehash(domain);
   }
@@ -91,7 +114,7 @@ export default class Ens extends NamingService {
     return (
       domain === 'eth' ||
       (/^[^-]*[^-]*\.(eth|luxe|xyz|kred|addr\.reverse)$/.test(domain) &&
-        domain.split('.').every(v => !!v.length))
+        domain.split('.').every((v) => !!v.length))
     );
   }
 
@@ -102,7 +125,11 @@ export default class Ens extends NamingService {
 
   async resolver(domain: string): Promise<string> {
     const nodeHash = this.namehash(domain);
-    const resolverAddr = await this.callMethod(this.readerContract, 'resolver', [nodeHash]);
+    const resolverAddr = await this.callMethod(
+      this.readerContract,
+      'resolver',
+      [nodeHash],
+    );
     if (isNullAddress(resolverAddr)) {
       throw new ResolutionError(ResolutionErrorCode.UnspecifiedResolver);
     }
@@ -112,23 +139,31 @@ export default class Ens extends NamingService {
   async record(domain: string, key: string): Promise<string> {
     const returnee = (await this.records(domain, [key]))[key];
     if (!returnee) {
-      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {domain, recordName: key});
+      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {
+        domain,
+        recordName: key,
+      });
     }
     return returnee;
   }
 
-  async records(domain: string, keys: string[]): Promise<Record<string, string>> {
-    const values = await Promise.all(keys.map(async key => {
-      if (key.startsWith('crypto.')) {
-        const ticker = key.split('.')[1];
-        return await this.addr(domain, ticker);
-      }
-      if (key === 'ipfs.html.value' || key === 'dweb.ipfs.hash') {
-        return await this.getContentHash(domain);
-      }
-      const ensRecordName = this.fromUDRecordNameToENS(key);
-      return await this.getTextRecord(domain, ensRecordName);
-    }));
+  async records(
+    domain: string,
+    keys: string[],
+  ): Promise<Record<string, string>> {
+    const values = await Promise.all(
+      keys.map(async (key) => {
+        if (key.startsWith('crypto.')) {
+          const ticker = key.split('.')[1];
+          return await this.addr(domain, ticker);
+        }
+        if (key === 'ipfs.html.value' || key === 'dweb.ipfs.hash') {
+          return await this.getContentHash(domain);
+        }
+        const ensRecordName = this.fromUDRecordNameToENS(key);
+        return await this.getTextRecord(domain, ensRecordName);
+      }),
+    );
     return constructRecords(keys, values);
   }
 
@@ -146,12 +181,14 @@ export default class Ens extends NamingService {
 
     const reverseAddress = address + '.addr.reverse';
     const nodeHash = this.namehash(reverseAddress);
-    const resolverAddress = await this.resolver(reverseAddress).catch((err: ResolutionError) => {
-      if (err.code === ResolutionErrorCode.UnspecifiedResolver) {
-        return null;
-      }
-      throw err;
-    });
+    const resolverAddress = await this.resolver(reverseAddress).catch(
+      (err: ResolutionError) => {
+        if (err.code === ResolutionErrorCode.UnspecifiedResolver) {
+          return null;
+        }
+        throw err;
+      },
+    );
 
     if (isNullAddress(resolverAddress)) {
       return null;
@@ -160,7 +197,7 @@ export default class Ens extends NamingService {
     const resolverContract = new EthereumContract(
       resolverInterface(resolverAddress, EthCoinIndex),
       resolverAddress,
-      this.provider
+      this.provider,
     );
 
     return await this.resolverCallToName(resolverContract, nodeHash);
@@ -172,7 +209,7 @@ export default class Ens extends NamingService {
   private resolverCallToName(resolverContract: EthereumContract, nodeHash) {
     return this.callMethod(resolverContract, 'name', [nodeHash]);
   }
-  
+
   async twitter(domain: string): Promise<string> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
       domain,
@@ -188,10 +225,18 @@ export default class Ens extends NamingService {
   }
 
   protected getCoinType(currencyTicker: string): string {
-    const bip44constants = requireOrFail('bip44-constants', 'bip44-constants', '^8.0.5');
-    const formatsByCoinType = requireOrFail('@ensdomains/address-encoder', '@ensdomains/address-encoder', '>= 0.1.x <= 0.2.x').formatsByCoinType;
+    const bip44constants = requireOrFail(
+      'bip44-constants',
+      'bip44-constants',
+      '^8.0.5',
+    );
+    const formatsByCoinType = requireOrFail(
+      '@ensdomains/address-encoder',
+      '@ensdomains/address-encoder',
+      '>= 0.1.x <= 0.2.x',
+    ).formatsByCoinType;
     const coin = bip44constants.findIndex(
-      item =>
+      (item) =>
         item[1] === currencyTicker.toUpperCase() ||
         item[2] === currencyTicker.toUpperCase(),
     );
@@ -215,18 +260,27 @@ export default class Ens extends NamingService {
     return mapper[record] || record;
   }
 
-  private async addr(domain: string, currencyTicker: string): Promise<string | undefined> {
-    const resolver = await this.resolver(domain).catch((err: ResolutionError) => {
-      if (err.code !== ResolutionErrorCode.UnspecifiedResolver) {
-        throw err;
-      }
-    });
+  private async addr(
+    domain: string,
+    currencyTicker: string,
+  ): Promise<string | undefined> {
+    const resolver = await this.resolver(domain).catch(
+      (err: ResolutionError) => {
+        if (err.code !== ResolutionErrorCode.UnspecifiedResolver) {
+          throw err;
+        }
+      },
+    );
     if (!resolver) {
       const owner = await this.owner(domain);
       if (isNullAddress(owner)) {
-        throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {domain});
+        throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+          domain,
+        });
       }
-      throw new ResolutionError(ResolutionErrorCode.UnspecifiedResolver, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnspecifiedResolver, {
+        domain,
+      });
     }
 
     const cointType = this.getCoinType(currencyTicker.toUpperCase());
@@ -238,11 +292,15 @@ export default class Ens extends NamingService {
     domain: string,
     coinType: string,
   ): Promise<string | undefined> {
-    const formatsByCoinType = requireOrFail('@ensdomains/address-encoder', '@ensdomains/address-encoder', '>= 0.1.x <= 0.2.x').formatsByCoinType;
+    const formatsByCoinType = requireOrFail(
+      '@ensdomains/address-encoder',
+      '@ensdomains/address-encoder',
+      '>= 0.1.x <= 0.2.x',
+    ).formatsByCoinType;
     const resolverContract = new EthereumContract(
       resolverInterface(resolver, coinType),
       resolver,
-      this.provider
+      this.provider,
     );
     const nodeHash = this.namehash(domain);
     const addr: string =
@@ -264,7 +322,7 @@ export default class Ens extends NamingService {
   }
 
   private async getContentHash(domain: string): Promise<string | undefined> {
-    const contentHash = requireOrFail('content-hash', 'content-hash', '^2.5.2')
+    const contentHash = requireOrFail('content-hash', 'content-hash', '^2.5.2');
     const nodeHash = this.namehash(domain);
     const resolverContract = await this.getResolverContract(domain);
     const contentHashEncoded = await this.callMethod(
@@ -287,7 +345,7 @@ export default class Ens extends NamingService {
     return new EthereumContract(
       resolverInterface(resolverAddress, coinType),
       resolverAddress,
-      this.provider
+      this.provider,
     );
   }
 

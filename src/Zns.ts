@@ -3,17 +3,21 @@ import {
   toBech32Address,
   toChecksumAddress,
 } from './utils/znsUtils';
-import { isNullAddress, constructRecords } from './utils';
-import { Dictionary, ZnsResolution, ZnsSupportedNetwork } from './types';
+import {isNullAddress, constructRecords} from './utils';
+import {Dictionary, ZnsResolution, ZnsSupportedNetwork} from './types';
+import {ResolutionError, ResolutionErrorCode} from './errors/resolutionError';
 import {
-  ResolutionError,
-  ResolutionErrorCode,
-} from './errors/resolutionError';
-import { CryptoRecords, Provider, ZnsSource, NamingServiceName } from './types/publicTypes';
+  CryptoRecords,
+  Provider,
+  ZnsSource,
+  NamingServiceName,
+} from './types/publicTypes';
 import FetchProvider from './FetchProvider';
-import { znsChildhash, znsNamehash } from './utils/namehash';
-import { NamingService } from './NamingService';
-import ConfigurationError, { ConfigurationErrorCode } from './errors/configurationError';
+import {znsChildhash, znsNamehash} from './utils/namehash';
+import {NamingService} from './NamingService';
+import ConfigurationError, {
+  ConfigurationErrorCode,
+} from './errors/configurationError';
 
 /**
  * @internal
@@ -23,30 +27,30 @@ export default class Zns extends NamingService {
     1: 'https://api.zilliqa.com',
     333: 'https://dev-api.zilliqa.com',
     111: 'http://localhost:4201',
-  }
+  };
 
   static readonly NetworkNameMap = {
     mainnet: 1,
     testnet: 333,
     localnet: 111,
   };
-  
+
   static readonly RegistryMap = {
     1: 'zil1jcgu2wlx6xejqk9jw3aaankw6lsjzeunx2j0jz',
   };
-  
+
   readonly name: NamingServiceName = NamingServiceName.ZNS;
   readonly network: number;
   readonly url: string | undefined;
   readonly registryAddress: string;
   readonly provider: Provider;
-  
+
   constructor(source?: ZnsSource) {
     super();
     if (!source) {
       source = {
         url: Zns.UrlMap[1],
-        network: "mainnet"
+        network: 'mainnet',
       };
     }
     if (!source.network || !ZnsSupportedNetwork.guard(source.network)) {
@@ -56,9 +60,11 @@ export default class Zns extends NamingService {
     }
     this.network = Zns.NetworkNameMap[source.network];
     this.url = source['url'] || Zns.UrlMap[this.network];
-    this.provider = source['provider'] || new FetchProvider(this.name, this.url!);
-    this.registryAddress = source['registryAddress'] || Zns.RegistryMap[this.network];
-    if (this.registryAddress.startsWith("0x")) {
+    this.provider =
+      source['provider'] || new FetchProvider(this.name, this.url!);
+    this.registryAddress =
+      source['registryAddress'] || Zns.RegistryMap[this.network];
+    if (this.registryAddress.startsWith('0x')) {
       this.registryAddress = toBech32Address(this.registryAddress);
     }
   }
@@ -70,11 +76,15 @@ export default class Zns extends NamingService {
   async owner(domain: string): Promise<string> {
     const recordAddresses = await this.getRecordsAddresses(domain);
     if (!recordAddresses) {
-      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, { domain });
+      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+        domain,
+      });
     }
-    const [ownerAddress,] = recordAddresses;
+    const [ownerAddress] = recordAddresses;
     if (!ownerAddress) {
-      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, { domain });
+      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+        domain,
+      });
     }
 
     return ownerAddress;
@@ -100,7 +110,9 @@ export default class Zns extends NamingService {
 
   namehash(domain: string): string {
     if (!this.isSupportedDomain(domain)) {
-      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
+        domain,
+      });
     }
     return znsNamehash(domain);
   }
@@ -114,28 +126,30 @@ export default class Zns extends NamingService {
     return (
       !!tokens.length &&
       tokens[tokens.length - 1] === 'zil' &&
-      tokens.every(v => !!v.length)
+      tokens.every((v) => !!v.length)
     );
   }
 
   async record(domain: string, key: string): Promise<string> {
     const returnee = (await this.records(domain, [key]))[key];
     if (!returnee) {
-      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {domain, recordName: key});
+      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {
+        domain,
+        recordName: key,
+      });
     }
     return returnee;
   }
 
   async records(domain: string, keys: string[]): Promise<CryptoRecords> {
-    const records = await this.allRecords(domain)
-    return constructRecords(keys, records)
+    const records = await this.allRecords(domain);
+    return constructRecords(keys, records);
   }
 
   async allRecords(domain: string): Promise<CryptoRecords> {
     const resolverAddress = await this.resolver(domain);
     return await this.getResolverRecords(resolverAddress);
   }
-
 
   async twitter(domain: string): Promise<string> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
@@ -144,7 +158,10 @@ export default class Zns extends NamingService {
     });
   }
 
-  async reverse(address: string, currencyTicker: string): Promise<string | null> {
+  async reverse(
+    address: string,
+    currencyTicker: string,
+  ): Promise<string | null> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
       methodName: 'reverse',
     });
@@ -154,7 +171,9 @@ export default class Zns extends NamingService {
     domain: string,
   ): Promise<[string, string] | undefined> {
     if (!this.isSupportedDomain(domain)) {
-      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
+        domain,
+      });
     }
 
     const registryRecord = await this.getContractMapValue(
@@ -170,7 +189,9 @@ export default class Zns extends NamingService {
       string,
     ];
     return [
-      ownerAddress.startsWith('0x') ? toBech32Address(ownerAddress) : ownerAddress,
+      ownerAddress.startsWith('0x')
+        ? toBech32Address(ownerAddress)
+        : ownerAddress,
       resolverAddress,
     ];
   }
@@ -193,7 +214,7 @@ export default class Zns extends NamingService {
   ): Promise<any> {
     const params = [contractAddress.replace('0x', ''), field, keys];
     const method = 'GetSmartContractSubState';
-    return await this.provider.request({ method, params });
+    return await this.provider.request({method, params});
   }
 
   private async getContractField(

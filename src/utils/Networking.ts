@@ -15,11 +15,14 @@ export default class Networking {
     return false;
   }
 
-  static getEnv(): "NODE" | "BROWSER" {
-    return this.isNode() ? "NODE" : "BROWSER";
+  static getEnv(): 'NODE' | 'BROWSER' {
+    return this.isNode() ? 'NODE' : 'BROWSER';
   }
 
-  static async fetch(url: string, options: {body?: string, headers?: Record<string, string>, method?: string}): Promise<FetchResponse | Response> {
+  static async fetch(
+    url: string,
+    options: {body?: string; headers?: Record<string, string>; method?: string},
+  ): Promise<FetchResponse | Response> {
     return this.isNode() ? nodeFetch(url, options) : window.fetch(url, options);
   }
 }

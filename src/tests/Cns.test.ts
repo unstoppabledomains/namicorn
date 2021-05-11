@@ -1,6 +1,6 @@
 import Resolution from '../index';
-import { ResolutionErrorCode } from '../errors/resolutionError';
-import { NullAddress } from '../types';
+import {ResolutionErrorCode} from '../errors/resolutionError';
+import {NullAddress} from '../types';
 import {
   CryptoDomainWithoutResolver,
   CryptoDomainWithTwitterVerification,
@@ -13,10 +13,10 @@ import {
   CryptoDomainWithAllRecords,
 } from './helpers';
 import FetchProvider from '../FetchProvider';
-import { CnsSupportedNetworks, NamingServiceName } from '../types/publicTypes';
+import {CnsSupportedNetworks, NamingServiceName} from '../types/publicTypes';
 import Cns from '../Cns';
 import Networking from '../utils/Networking';
-import { ConfigurationErrorCode } from '../errors/configurationError';
+import {ConfigurationErrorCode} from '../errors/configurationError';
 
 let resolution: Resolution;
 let cns: Cns;
@@ -24,7 +24,7 @@ let cns: Cns;
 beforeEach(async () => {
   jest.restoreAllMocks();
   resolution = new Resolution({
-    sourceConfig: { cns: { url: protocolLink(), network: "mainnet" } },
+    sourceConfig: {cns: {url: protocolLink(), network: 'mainnet'}},
   });
   cns = resolution.serviceMap[NamingServiceName.CNS] as Cns;
 });
@@ -38,9 +38,12 @@ describe('CNS', () => {
 
   it('should not allow ropsten as testnet', async () => {
     await expectConfigurationErrorCode(
-      () => new Resolution({sourceConfig: {
-        cns: {network: "ropsten" as CnsSupportedNetworks}
-      }}),
+      () =>
+        new Resolution({
+          sourceConfig: {
+            cns: {network: 'ropsten' as CnsSupportedNetworks},
+          },
+        }),
       ConfigurationErrorCode.UnsupportedNetwork,
     );
   });
@@ -74,9 +77,9 @@ describe('CNS', () => {
         },
       },
     });
-    const twitterHandle = await resolution.serviceMap[NamingServiceName.CNS].twitter(
-      CryptoDomainWithTwitterVerification,
-    );
+    const twitterHandle = await resolution.serviceMap[
+      NamingServiceName.CNS
+    ].twitter(CryptoDomainWithTwitterVerification);
     expectSpyToBeCalled(spies);
     expect(twitterHandle).toBe('derainberk');
   });
@@ -97,7 +100,7 @@ describe('CNS', () => {
 
   it('should return a valid resolver address', async () => {
     const spies = mockAsyncMethods(cns, {
-      get: { resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842' },
+      get: {resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842'},
     });
     const resolverAddress = await resolution.resolver(
       CryptoDomainWithAllRecords,
@@ -123,7 +126,7 @@ describe('CNS', () => {
 
   it('should throw ResolutionError.UnspecifiedResolver', async () => {
     const spies = mockAsyncMethods(cns, {
-      get: { owner: 'someowneraddress', resolver: NullAddress },
+      get: {owner: 'someowneraddress', resolver: NullAddress},
     });
     await expectResolutionErrorCode(
       resolution.resolver(CryptoDomainWithoutResolver),
@@ -138,14 +141,12 @@ describe('CNS', () => {
         get: {
           resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842',
           records: {
-            ['crypto.BCH.address']: 'qzx048ez005q4yhphqu2pylpfc3hy88zzu4lu6q9j8',
+            ['crypto.BCH.address']:
+              'qzx048ez005q4yhphqu2pylpfc3hy88zzu4lu6q9j8',
           },
         },
       });
-      const addr = await resolution.addr(
-        CryptoDomainWithAllRecords,
-        'BCH',
-      );
+      const addr = await resolution.addr(CryptoDomainWithAllRecords, 'BCH');
       expectSpyToBeCalled(eyes);
       expect(addr).toBe('qzx048ez005q4yhphqu2pylpfc3hy88zzu4lu6q9j8');
     });
@@ -160,10 +161,7 @@ describe('CNS', () => {
           },
         },
       });
-      const addr = await resolution.addr(
-        CryptoDomainWithAllRecords,
-        'ADA',
-      );
+      const addr = await resolution.addr(CryptoDomainWithAllRecords, 'ADA');
       expectSpyToBeCalled(eyes);
       expect(addr).toBe(
         'DdzFFzCqrhssjmxkChyAHE9MdHJkEc4zsZe7jgum6RtGzKLkUanN1kPZ1ipVPBLwVq2TWrhmPsAvArcr47Pp1VNKmZTh6jv8ctAFVCkj',
@@ -341,7 +339,7 @@ describe('CNS', () => {
 
     it('should return UnregisteredDomain error when owner address not found', async () => {
       const spies = mockAsyncMethods(cns, {
-        get: { owner: NullAddress },
+        get: {owner: NullAddress},
       });
       await expectResolutionErrorCode(
         resolution.resolver('unknown-unknown-938388383.crypto'),
@@ -352,7 +350,7 @@ describe('CNS', () => {
 
     it('should return UnspecifiedResolver error when resolver address not found', async () => {
       const spies = mockAsyncMethods(cns, {
-        get: { owner: '0x000000000000000000000000000000000000dead' },
+        get: {owner: '0x000000000000000000000000000000000000dead'},
       });
       await expectResolutionErrorCode(
         resolution.resolver(CryptoDomainWithoutResolver),
@@ -363,14 +361,18 @@ describe('CNS', () => {
 
     it('should work without any configs', async () => {
       resolution = new Resolution();
-      const eyes = mockAsyncMethods(resolution.serviceMap[NamingServiceName.CNS], {
-        get: {
-          resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842',
-          records: {
-            ['crypto.ETH.address']: '0xe7474D07fD2FA286e7e0aa23cd107F8379085037',
+      const eyes = mockAsyncMethods(
+        resolution.serviceMap[NamingServiceName.CNS],
+        {
+          get: {
+            resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842',
+            records: {
+              ['crypto.ETH.address']:
+                '0xe7474D07fD2FA286e7e0aa23cd107F8379085037',
+            },
           },
         },
-      });
+      );
       const address = await resolution.addr(CryptoDomainWithAllRecords, 'eth');
       expectSpyToBeCalled(eyes);
       expect(address).toBe('0xe7474D07fD2FA286e7e0aa23cd107F8379085037');
@@ -396,7 +398,7 @@ describe('CNS', () => {
         const spies = mockAsyncMethods(cns, {
           get: {
             resolver: '0xb66DcE2DA6afAAa98F2013446dBCB0f4B0ab2842',
-            records: { ['whois.email.value']: 'johnny@unstoppabledomains.com' },
+            records: {['whois.email.value']: 'johnny@unstoppabledomains.com'},
           },
         });
         const email = await resolution.email(CryptoDomainWithAllRecords);
@@ -528,7 +530,7 @@ describe('CNS', () => {
 
       it('should throw UnregisteredDomain', async () => {
         const eyes = mockAsyncMethods(cns, {
-          get: { owner: NullAddress },
+          get: {owner: NullAddress},
         });
 
         await expectResolutionErrorCode(
@@ -547,13 +549,13 @@ describe('CNS', () => {
       );
 
       expect(
-        resolution.namehash('operadingo4.crypto', { prefix: false }),
+        resolution.namehash('operadingo4.crypto', {prefix: false}),
       ).toEqual(
         '70f542f09763d3ab404a6d87f6a2fad7d49f01b09c44064b4227d165ead5cf25',
       );
 
       expect(
-        resolution.namehash('operadingo4.crypto', { format: 'dec' }),
+        resolution.namehash('operadingo4.crypto', {format: 'dec'}),
       ).toEqual(
         '51092378573785850370557709888128643877973998831507731627523713553233928900389',
       );
@@ -561,14 +563,13 @@ describe('CNS', () => {
   });
 
   describe('Providers', () => {
-
     it('should throw error when FetchProvider throws Error', async () => {
       const url = protocolLink();
       const provider = new FetchProvider(NamingServiceName.CNS, url);
-      resolution = new Resolution({ sourceConfig: { cns: { url, provider, network: "mainnet" } } });
-      jest
-        .spyOn(Networking, 'fetch')
-        .mockRejectedValue(new Error('error_up'));
+      resolution = new Resolution({
+        sourceConfig: {cns: {url, provider, network: 'mainnet'}},
+      });
+      jest.spyOn(Networking, 'fetch').mockRejectedValue(new Error('error_up'));
 
       await expect(
         resolution.record(CryptoDomainWithAllRecords, 'No.such.record'),

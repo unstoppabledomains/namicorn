@@ -1,6 +1,6 @@
 export default [
   {
-    inputs: [{ name: 'ensAddr', type: 'address' }],
+    inputs: [{name: 'ensAddr', type: 'address'}],
     payable: false,
     stateMutability: 'nonpayable',
     type: 'constructor',

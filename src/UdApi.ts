@@ -1,15 +1,17 @@
-import { toBech32Address } from './utils/znsUtils';
-import {
-  ResolutionError,
-  ResolutionErrorCode,
-} from './errors/resolutionError';
+import {toBech32Address} from './utils/znsUtils';
+import {ResolutionError, ResolutionErrorCode} from './errors/resolutionError';
 import pckg from './package.json';
-import { isValidTwitterSignature } from './utils/TwitterSignatureValidator';
-import { CryptoRecords, ResolutionResponse, ResolutionMethod, NamingServiceName } from './types/publicTypes';
+import {isValidTwitterSignature} from './utils/TwitterSignatureValidator';
+import {
+  CryptoRecords,
+  ResolutionResponse,
+  ResolutionMethod,
+  NamingServiceName,
+} from './types/publicTypes';
 import Networking from './utils/Networking';
-import { constructRecords, findNamingServiceName } from './utils';
-import { znsNamehash, eip137Namehash } from './utils/namehash';
-import { NamingService } from './NamingService';
+import {constructRecords, findNamingServiceName} from './utils';
+import {znsNamehash, eip137Namehash} from './utils/namehash';
+import {NamingService} from './NamingService';
 
 /**
  * @internal
@@ -23,14 +25,14 @@ export default class Udapi extends NamingService {
 
   constructor(url?: string) {
     super();
-    this.name = "UDAPI";
-    this.url = url || "https://unstoppabledomains.com/api/v1";
+    this.name = 'UDAPI';
+    this.url = url || 'https://unstoppabledomains.com/api/v1';
     const DefaultUserAgent = Networking.isNode()
       ? 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
       : navigator.userAgent;
     const version = pckg.version;
     const CustomUserAgent = `${DefaultUserAgent} Resolution/${version}`;
-    this.headers = { 'X-user-agent': CustomUserAgent };
+    this.headers = {'X-user-agent': CustomUserAgent};
   }
 
   isSupportedDomain(domain: string): boolean {
@@ -58,14 +60,15 @@ export default class Udapi extends NamingService {
 
   async records(domain: string, keys: string[]): Promise<CryptoRecords> {
     const records = await this.allRecords(domain);
-    return constructRecords(keys, records)
+    return constructRecords(keys, records);
   }
 
-
   async owner(domain: string): Promise<string> {
-    const { owner } = (await this.resolve(domain)).meta;
+    const {owner} = (await this.resolve(domain)).meta;
     if (!owner) {
-      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, { domain });
+      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+        domain,
+      });
     }
 
     if (domain.endsWith('.zil')) {
@@ -79,7 +82,7 @@ export default class Udapi extends NamingService {
     if (serviceName !== NamingServiceName.CNS) {
       throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
         domain,
-        methodName: "twitter"
+        methodName: 'twitter',
       });
     }
 
@@ -91,8 +94,7 @@ export default class Udapi extends NamingService {
     }
     const owner = domainMetaData.meta.owner;
     const records = domainMetaData.records || {};
-    const validationSignature =
-      records['validation.social.twitter.username'];
+    const validationSignature = records['validation.social.twitter.username'];
     const twitterHandle = records['social.twitter.username'];
 
     if (!validationSignature) {
@@ -107,7 +109,7 @@ export default class Udapi extends NamingService {
         domain: domain,
       });
     }
-    
+
     if (
       !isValidTwitterSignature({
         tokenId: domainMetaData.meta.namehash,
@@ -148,7 +150,10 @@ export default class Udapi extends NamingService {
     return record.meta.resolver;
   }
 
-  async reverse(address: string, currencyTicker: string): Promise<string | null> {
+  async reverse(
+    address: string,
+    currencyTicker: string,
+  ): Promise<string | null> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
       methodName: 'reverse',
     });

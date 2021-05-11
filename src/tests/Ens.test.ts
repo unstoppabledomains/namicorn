@@ -1,6 +1,6 @@
 import nock from 'nock';
-import Resolution, { NamingServiceName, ResolutionErrorCode } from '../index';
-import { NullAddress } from '../types';
+import Resolution, {NamingServiceName, ResolutionErrorCode} from '../index';
+import {NullAddress} from '../types';
 import {
   expectConfigurationErrorCode,
   expectResolutionErrorCode,
@@ -11,8 +11,8 @@ import {
   protocolLink,
   ProviderProtocol,
 } from './helpers';
-import { ConfigurationErrorCode } from '../errors/configurationError';
-import { EnsSupportedNetworks } from '../types/publicTypes';
+import {ConfigurationErrorCode} from '../errors/configurationError';
+import {EnsSupportedNetworks} from '../types/publicTypes';
 import Ens from '../Ens';
 
 let resolution: Resolution;
@@ -23,7 +23,10 @@ beforeEach(() => {
   jest.restoreAllMocks();
   resolution = new Resolution({
     sourceConfig: {
-      ens: { url: protocolLink(ProviderProtocol.http, NamingServiceName.ENS), network: "mainnet" },
+      ens: {
+        url: protocolLink(ProviderProtocol.http, NamingServiceName.ENS),
+        network: 'mainnet',
+      },
     },
   });
   ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -33,7 +36,7 @@ describe('ENS', () => {
   it('allows ens network specified as string', async () => {
     const resolution = new Resolution({
       sourceConfig: {
-        ens: { network: 'mainnet' },
+        ens: {network: 'mainnet'},
       },
     });
     const ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -44,7 +47,9 @@ describe('ENS', () => {
   });
 
   it('resolves .eth name using blockchain', async () => {
-    expect(ens.url).toBe(protocolLink(ProviderProtocol.http, NamingServiceName.ENS));
+    expect(ens.url).toBe(
+      protocolLink(ProviderProtocol.http, NamingServiceName.ENS),
+    );
     expect(ens.network).toEqual(1);
 
     const eyes = mockAsyncMethods(ens, {
@@ -154,12 +159,14 @@ describe('ENS', () => {
 
   it('checks normalizeSource ens (object) #1', async () => {
     expect(ens.network).toBe(1);
-    expect(ens.url).toBe(protocolLink(ProviderProtocol.http, NamingServiceName.ENS));
+    expect(ens.url).toBe(
+      protocolLink(ProviderProtocol.http, NamingServiceName.ENS),
+    );
   });
 
   it('checks normalizeSource ens (object) #2', async () => {
     const resolution = new Resolution({
-      sourceConfig: { ens: { network: "ropsten" } },
+      sourceConfig: {ens: {network: 'ropsten'}},
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
     expect(ens.network).toBe(3);
@@ -174,7 +181,7 @@ describe('ENS', () => {
   it('checks normalizeSource ens (object) #3', async () => {
     const resolution = new Resolution({
       sourceConfig: {
-        ens: { url: 'https://rinkeby.infura.io', network: "rinkeby" },
+        ens: {url: 'https://rinkeby.infura.io', network: 'rinkeby'},
       },
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -185,7 +192,7 @@ describe('ENS', () => {
   it('checks normalizeSource ens (object) #4', async () => {
     const resolution = new Resolution({
       sourceConfig: {
-        ens: { url: 'https://goerli.infura.io', network: "goerli" },
+        ens: {url: 'https://goerli.infura.io', network: 'goerli'},
       },
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -198,19 +205,27 @@ describe('ENS', () => {
 
   it('checks normalizeSource ens (object) #6', async () => {
     expect(
-      () => new Resolution({ sourceConfig: { ens: { network: "notRealNetwork" as EnsSupportedNetworks } } }),
+      () =>
+        new Resolution({
+          sourceConfig: {
+            ens: {network: 'notRealNetwork' as EnsSupportedNetworks},
+          },
+        }),
     ).toThrowError('Unspecified network in Resolution ENS configuration');
   });
 
   it('checks normalizeSource ens (object) #7', async () => {
     expect(
-      () => new Resolution({ sourceConfig: { ens: { network: 'invalid' as EnsSupportedNetworks } } }),
+      () =>
+        new Resolution({
+          sourceConfig: {ens: {network: 'invalid' as EnsSupportedNetworks}},
+        }),
     ).toThrowError('Unspecified network in Resolution ENS configuration');
   });
 
   it('checks normalizeSource ens (object) #8', async () => {
     const resolution = new Resolution({
-      sourceConfig: { ens: { network: 'mainnet' } },
+      sourceConfig: {ens: {network: 'mainnet'}},
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
     expect(ens.network).toBe(1);
@@ -222,7 +237,10 @@ describe('ENS', () => {
   it('checks normalizeSource ens (object) #10', async () => {
     const resolution = new Resolution({
       sourceConfig: {
-        ens: { registryAddress: '0x314159265dd8dbb310642f98f50c066173c1259b', network: "mainnet" },
+        ens: {
+          registryAddress: '0x314159265dd8dbb310642f98f50c066173c1259b',
+          network: 'mainnet',
+        },
       },
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -257,7 +275,10 @@ describe('ENS', () => {
   it('checks normalizeSource ens (object) #12', async () => {
     const resolution = new Resolution({
       sourceConfig: {
-        ens: { registryAddress: '0xabcffff1231586348194fcabbeff1231240234fc', network: "mainnet" },
+        ens: {
+          registryAddress: '0xabcffff1231586348194fcabbeff1231240234fc',
+          network: 'mainnet',
+        },
       },
     });
     ens = resolution.serviceMap[NamingServiceName.ENS] as Ens;
@@ -275,7 +296,10 @@ describe('ENS', () => {
       () =>
         new Resolution({
           sourceConfig: {
-            ens: { network: 'custom' as EnsSupportedNetworks, url: 'https://custom.notinfura.io' },
+            ens: {
+              network: 'custom' as EnsSupportedNetworks,
+              url: 'https://custom.notinfura.io',
+            },
           },
         }),
       ConfigurationErrorCode.UnsupportedNetwork,

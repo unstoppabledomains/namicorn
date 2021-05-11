@@ -1,26 +1,26 @@
 export default [
   {
     constant: true,
-    inputs: [{ name: 'node', type: 'bytes32' }],
+    inputs: [{name: 'node', type: 'bytes32'}],
     name: 'resolver',
-    outputs: [{ name: '', type: 'address' }],
+    outputs: [{name: '', type: 'address'}],
     payable: false,
     type: 'function',
   },
   {
     constant: true,
-    inputs: [{ name: 'node', type: 'bytes32' }],
+    inputs: [{name: 'node', type: 'bytes32'}],
     name: 'owner',
-    outputs: [{ name: '', type: 'address' }],
+    outputs: [{name: '', type: 'address'}],
     payable: false,
     type: 'function',
   },
   {
     constant: false,
     inputs: [
-      { name: 'node', type: 'bytes32' },
-      { name: 'label', type: 'bytes32' },
-      { name: 'owner', type: 'address' },
+      {name: 'node', type: 'bytes32'},
+      {name: 'label', type: 'bytes32'},
+      {name: 'owner', type: 'address'},
     ],
     name: 'setSubnodeOwner',
     outputs: [],
@@ -30,8 +30,8 @@ export default [
   {
     constant: false,
     inputs: [
-      { name: 'node', type: 'bytes32' },
-      { name: 'ttl', type: 'uint64' },
+      {name: 'node', type: 'bytes32'},
+      {name: 'ttl', type: 'uint64'},
     ],
     name: 'setTTL',
     outputs: [],
@@ -40,17 +40,17 @@ export default [
   },
   {
     constant: true,
-    inputs: [{ name: 'node', type: 'bytes32' }],
+    inputs: [{name: 'node', type: 'bytes32'}],
     name: 'ttl',
-    outputs: [{ name: '', type: 'uint64' }],
+    outputs: [{name: '', type: 'uint64'}],
     payable: false,
     type: 'function',
   },
   {
     constant: false,
     inputs: [
-      { name: 'node', type: 'bytes32' },
-      { name: 'resolver', type: 'address' },
+      {name: 'node', type: 'bytes32'},
+      {name: 'resolver', type: 'address'},
     ],
     name: 'setResolver',
     outputs: [],
@@ -60,8 +60,8 @@ export default [
   {
     constant: false,
     inputs: [
-      { name: 'node', type: 'bytes32' },
-      { name: 'owner', type: 'address' },
+      {name: 'node', type: 'bytes32'},
+      {name: 'owner', type: 'address'},
     ],
     name: 'setOwner',
     outputs: [],
@@ -71,8 +71,8 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, name: 'node', type: 'bytes32' },
-      { indexed: false, name: 'owner', type: 'address' },
+      {indexed: true, name: 'node', type: 'bytes32'},
+      {indexed: false, name: 'owner', type: 'address'},
     ],
     name: 'Transfer',
     type: 'event',
@@ -80,9 +80,9 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, name: 'node', type: 'bytes32' },
-      { indexed: true, name: 'label', type: 'bytes32' },
-      { indexed: false, name: 'owner', type: 'address' },
+      {indexed: true, name: 'node', type: 'bytes32'},
+      {indexed: true, name: 'label', type: 'bytes32'},
+      {indexed: false, name: 'owner', type: 'address'},
     ],
     name: 'NewOwner',
     type: 'event',
@@ -90,8 +90,8 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, name: 'node', type: 'bytes32' },
-      { indexed: false, name: 'resolver', type: 'address' },
+      {indexed: true, name: 'node', type: 'bytes32'},
+      {indexed: false, name: 'resolver', type: 'address'},
     ],
     name: 'NewResolver',
     type: 'event',
@@ -99,8 +99,8 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, name: 'node', type: 'bytes32' },
-      { indexed: false, name: 'ttl', type: 'uint64' },
+      {indexed: true, name: 'node', type: 'bytes32'},
+      {indexed: false, name: 'ttl', type: 'uint64'},
     ],
     name: 'NewTTL',
     type: 'event',

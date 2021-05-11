@@ -1,21 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-function program_is_installed {
-  # set to 1 initially
-  local return_=1
-  # set to 0 if not found
-  type $1 >/dev/null 2>&1 || { local return_=0; }
-  # return value
-  echo "$return_"
-}
-
-if [ $(program_is_installed "yarn") -eq 1 ]
-then
-  yarn lint --max-warnings=0
-elif [ $(program_is_installed "npm") -eq 1 ]
-then
-  npm run lint -- --max-warnings=0
-else
-  echo "yarn or npm were not found"
-fi
+npx pretty-quick --staged

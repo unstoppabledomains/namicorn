@@ -1,6 +1,6 @@
-import { Hash, keccak_256 as sha3 } from 'js-sha3';
-import { sha256 } from 'js-sha256';
-import { Buffer } from 'buffer';
+import {Hash, keccak_256 as sha3} from 'js-sha3';
+import {sha256} from 'js-sha256';
+import {Buffer} from 'buffer';
 
 export function eip137Namehash(domain: string): string {
   const arr = hashArray(domain, sha3);
@@ -8,7 +8,7 @@ export function eip137Namehash(domain: string): string {
 }
 
 export function eip137Childhash(parentHash: string, label: string): string {
-  return childhash(parentHash, label, sha3)
+  return childhash(parentHash, label, sha3);
 }
 
 export function znsNamehash(domain: string): string {
@@ -20,7 +20,11 @@ export function znsChildhash(parentHash: string, label: string): string {
   return childhash(parentHash, label, sha256);
 }
 
-function childhash(parentHash: string, label: string, hashingAlgo: Hash): string {
+function childhash(
+  parentHash: string,
+  label: string,
+  hashingAlgo: Hash,
+): string {
   const parent = parentHash.replace(/^0x/, '');
   const childHash = hashingAlgo.hex(label);
   return `0x${hashingAlgo.hex(Buffer.from(`${parent}${childHash}`, 'hex'))}`;
@@ -38,5 +42,7 @@ function hashArray(domain: string, hashingAlgo: Hash): number[] {
 }
 
 function arrayToHex(arr: number[]) {
-  return `0x${Array.prototype.map.call(arr, x => ('00' + x.toString(16)).slice(-2)).join('')}`;
+  return `0x${Array.prototype.map
+    .call(arr, (x) => ('00' + x.toString(16)).slice(-2))
+    .join('')}`;
 }

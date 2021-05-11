@@ -1,16 +1,34 @@
-import { BlockhanNetworkUrlMap, CnsSupportedNetwork, ProxyReaderMap, hasProvider } from './types';
-import { default as proxyReaderAbi } from './contracts/cns/proxyReader';
-import { default as resolverInterface } from './contracts/cns/resolver';
-import ResolutionError, { ResolutionErrorCode } from './errors/resolutionError';
+import {
+  BlockhanNetworkUrlMap,
+  CnsSupportedNetwork,
+  ProxyReaderMap,
+  hasProvider,
+} from './types';
+import {default as proxyReaderAbi} from './contracts/cns/proxyReader';
+import {default as resolverInterface} from './contracts/cns/resolver';
+import ResolutionError, {ResolutionErrorCode} from './errors/resolutionError';
 import EthereumContract from './contracts/EthereumContract';
-import { constructRecords, isNullAddress, EthereumNetworksInverted, EthereumNetworks } from './utils';
-import { CnsSource, CryptoRecords, DomainData, NamingServiceName, Provider } from './types/publicTypes';
-import { isValidTwitterSignature } from './utils/TwitterSignatureValidator';
+import {
+  constructRecords,
+  isNullAddress,
+  EthereumNetworksInverted,
+  EthereumNetworks,
+} from './utils';
+import {
+  CnsSource,
+  CryptoRecords,
+  DomainData,
+  NamingServiceName,
+  Provider,
+} from './types/publicTypes';
+import {isValidTwitterSignature} from './utils/TwitterSignatureValidator';
 import NetworkConfig from './config/network-config.json';
 import FetchProvider from './FetchProvider';
-import { eip137Childhash, eip137Namehash } from './utils/namehash';
-import { NamingService } from './NamingService';
-import ConfigurationError, { ConfigurationErrorCode } from './errors/configurationError';
+import {eip137Childhash, eip137Namehash} from './utils/namehash';
+import {NamingService} from './NamingService';
+import ConfigurationError, {
+  ConfigurationErrorCode,
+} from './errors/configurationError';
 import SupportedKeys from './config/supported-keys.json';
 
 /**
@@ -35,7 +53,7 @@ export default class Cns extends NamingService {
     if (!source) {
       source = {
         url: Cns.UrlMap[1],
-        network: "mainnet",
+        network: 'mainnet',
       };
     }
     if (!source.network || !CnsSupportedNetwork.guard(source.network)) {
@@ -45,37 +63,48 @@ export default class Cns extends NamingService {
     }
     this.network = EthereumNetworks[source.network];
     this.url = source['url'] || Cns.UrlMap[this.network];
-    this.provider = source['provider'] || new FetchProvider(this.name, this.url!);
+    this.provider =
+      source['provider'] || new FetchProvider(this.name, this.url!);
     this.readerContract = new EthereumContract(
       proxyReaderAbi,
       source['proxyReaderAddress'] || Cns.ProxyReaderMap[this.network],
-      this.provider
+      this.provider,
     );
   }
 
-  static async autoNetwork(config: { url: string } | { provider: Provider } ): Promise<Cns> {
+  static async autoNetwork(
+    config: {url: string} | {provider: Provider},
+  ): Promise<Cns> {
     let provider: Provider;
 
     if (hasProvider(config)) {
-      provider = config.provider; 
+      provider = config.provider;
     } else {
       if (!config.url) {
-        throw new ConfigurationError(ConfigurationErrorCode.UnspecifiedUrl, {method: NamingServiceName.CNS});
+        throw new ConfigurationError(ConfigurationErrorCode.UnspecifiedUrl, {
+          method: NamingServiceName.CNS,
+        });
       }
       provider = FetchProvider.factory(NamingServiceName.CNS, config.url);
     }
-    
-    const networkId = await provider.request({method: "net_version"}) as number;
+
+    const networkId = (await provider.request({
+      method: 'net_version',
+    })) as number;
     const networkName = EthereumNetworksInverted[networkId];
     if (!networkName || !CnsSupportedNetwork.guard(networkName)) {
-      throw new ConfigurationError(ConfigurationErrorCode.UnsupportedNetwork, {method: NamingServiceName.CNS});
+      throw new ConfigurationError(ConfigurationErrorCode.UnsupportedNetwork, {
+        method: NamingServiceName.CNS,
+      });
     }
     return new this({network: networkName, provider: provider});
   }
 
   namehash(domain: string): string {
     if (!this.isSupportedDomain(domain)) {
-      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
+        domain,
+      });
     }
     return eip137Namehash(domain);
   }
@@ -91,8 +120,8 @@ export default class Cns extends NamingService {
   isSupportedDomain(domain: string): boolean {
     return (
       domain === 'crypto' ||
-          (/^.+\.(crypto)$/.test(domain) && // at least one character plus .crypto ending
-            domain.split('.').every(v => !!v.length))
+      (/^.+\.(crypto)$/.test(domain) && // at least one character plus .crypto ending
+        domain.split('.').every((v) => !!v.length))
     );
   }
 
@@ -107,12 +136,18 @@ export default class Cns extends NamingService {
   async record(domain: string, key: string): Promise<string> {
     const returnee = (await this.records(domain, [key]))[key];
     if (!returnee) {
-      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {recordName: key, domain});
+      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {
+        recordName: key,
+        domain,
+      });
     }
-    return returnee
+    return returnee;
   }
 
-  async records(domain: string, keys: string[]): Promise<Record<string, string>> {
+  async records(
+    domain: string,
+    keys: string[],
+  ): Promise<Record<string, string>> {
     return (await this.getVerifiedData(domain, keys)).records;
   }
 
@@ -120,7 +155,11 @@ export default class Cns extends NamingService {
     const tokenId = this.namehash(domain);
     const resolver = await this.resolver(domain);
 
-    const resolverContract = new EthereumContract(resolverInterface, resolver, this.provider);
+    const resolverContract = new EthereumContract(
+      resolverInterface,
+      resolver,
+      this.provider,
+    );
     if (this.isLegacyResolver(resolver)) {
       return await this.getStandardRecords(tokenId);
     }
@@ -139,11 +178,17 @@ export default class Cns extends NamingService {
     const validationSignature = records['validation.social.twitter.username'];
     const twitterHandle = records['social.twitter.username'];
     if (isNullAddress(validationSignature)) {
-      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {domain, recordName: 'validation.social.twitter.username'})
+      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {
+        domain,
+        recordName: 'validation.social.twitter.username',
+      });
     }
 
     if (!twitterHandle) {
-      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {domain, recordName: 'social.twitter.username'})
+      throw new ResolutionError(ResolutionErrorCode.RecordNotFound, {
+        domain,
+        recordName: 'social.twitter.username',
+      });
     }
 
     const owner = data.owner;
@@ -166,20 +211,30 @@ export default class Cns extends NamingService {
     return twitterHandle;
   }
 
-  async reverse(address: string, currencyTicker: string): Promise<string | null> {
+  async reverse(
+    address: string,
+    currencyTicker: string,
+  ): Promise<string | null> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
       methodName: 'reverse',
     });
   }
 
-  private async getVerifiedData(domain: string, keys?: string[]): Promise<DomainData> {
+  private async getVerifiedData(
+    domain: string,
+    keys?: string[],
+  ): Promise<DomainData> {
     const tokenId = this.namehash(domain);
     const data = await this.get(tokenId, keys);
     if (isNullAddress(data.resolver)) {
       if (isNullAddress(data.owner)) {
-        throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {domain});
+        throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+          domain,
+        });
       }
-      throw new ResolutionError(ResolutionErrorCode.UnspecifiedResolver, {domain});
+      throw new ResolutionError(ResolutionErrorCode.UnspecifiedResolver, {
+        domain,
+      });
     }
     return data;
   }
@@ -193,13 +248,16 @@ export default class Cns extends NamingService {
     resolverContract: EthereumContract,
     tokenId: string,
   ): Promise<CryptoRecords> {
-    const startingBlock = await this.getStartingBlock(resolverContract, tokenId);
+    const startingBlock = await this.getStartingBlock(
+      resolverContract,
+      tokenId,
+    );
     const logs = await resolverContract.fetchLogs(
       'NewKey',
       tokenId,
       startingBlock,
     );
-    const keyTopics = logs.map(event => event.topics[2]);
+    const keyTopics = logs.map((event) => event.topics[2]);
     // If there are no NewKey events we want to check the standardRecords
     if (keyTopics.length === 0) {
       return await this.getStandardRecords(tokenId);
@@ -207,21 +265,30 @@ export default class Cns extends NamingService {
     return await this.getManyByHash(tokenId, keyTopics);
   }
 
-  private async getMany(tokenId: string, keys: string[]): Promise<CryptoRecords> {
+  private async getMany(
+    tokenId: string,
+    keys: string[],
+  ): Promise<CryptoRecords> {
     return (await this.get(tokenId, keys)).records;
   }
 
-  private async getManyByHash(tokenId: string, hashes: string[]): Promise<CryptoRecords> {
-    const [keys, values] = await this.readerContract.call('getManyByHash', [hashes, tokenId]) as [string[], string[]];
+  private async getManyByHash(
+    tokenId: string,
+    hashes: string[],
+  ): Promise<CryptoRecords> {
+    const [keys, values] = (await this.readerContract.call('getManyByHash', [
+      hashes,
+      tokenId,
+    ])) as [string[], string[]];
     return constructRecords(keys, values);
   }
 
   private async get(tokenId: string, keys: string[] = []): Promise<DomainData> {
-    const [resolver, owner, values] = await this.readerContract.call('getData', [
-      keys,
-      tokenId,
-    ]);
-    return {owner, resolver, records: constructRecords(keys, values)}
+    const [resolver, owner, values] = await this.readerContract.call(
+      'getData',
+      [keys, tokenId],
+    );
+    return {owner, resolver, records: constructRecords(keys, values)};
   }
 
   private isLegacyResolver(resolverAddress: string): boolean {
@@ -235,17 +302,22 @@ export default class Cns extends NamingService {
   }
 
   private isWellKnownLegacyResolver(resolverAddress: string): boolean {
-    const legacyAddresses = NetworkConfig?.networks[this.network]?.contracts?.Resolver?.legacyAddresses;
+    const legacyAddresses =
+      NetworkConfig?.networks[this.network]?.contracts?.Resolver
+        ?.legacyAddresses;
     if (!legacyAddresses || legacyAddresses.length === 0) {
       return false;
     }
-    return legacyAddresses.findIndex((address) => {
-      return address.toLowerCase() === resolverAddress.toLowerCase()
-    }) > -1;
+    return (
+      legacyAddresses.findIndex((address) => {
+        return address.toLowerCase() === resolverAddress.toLowerCase();
+      }) > -1
+    );
   }
 
   private isUpToDateResolver(resolverAddress: string): boolean {
-    const address = NetworkConfig?.networks[this.network]?.contracts?.Resolver?.address;
+    const address =
+      NetworkConfig?.networks[this.network]?.contracts?.Resolver?.address;
     if (!address) {
       return false;
     }
@@ -256,20 +328,20 @@ export default class Cns extends NamingService {
     contract: EthereumContract,
     tokenId: string,
   ): Promise<string> {
-    const defaultStartingBlock = NetworkConfig?.networks[this.network]?.contracts?.Resolver?.advancedEventsStartingBlock;
+    const defaultStartingBlock =
+      NetworkConfig?.networks[this.network]?.contracts?.Resolver
+        ?.advancedEventsStartingBlock;
     const logs = await contract.fetchLogs('ResetRecords', tokenId);
     const lastResetEvent = logs[logs.length - 1];
-    return (
-      lastResetEvent?.blockNumber ||
-      defaultStartingBlock
-    );
+    return lastResetEvent?.blockNumber || defaultStartingBlock;
   }
 }
 
 function getProxyReaderMap(): ProxyReaderMap {
   const map: ProxyReaderMap = {};
   for (const id of Object.keys(NetworkConfig.networks)) {
-    map[id] = NetworkConfig.networks[id].contracts.ProxyReader.address.toLowerCase();
+    map[id] =
+      NetworkConfig.networks[id].contracts.ProxyReader.address.toLowerCase();
   }
   return map;
 }

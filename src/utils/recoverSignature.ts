@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import { keccak256 as sha3 } from 'js-sha3';
-import { hexToBytes } from '.';
-import { requireOrFail } from './requireOrFail';
+import {keccak256 as sha3} from 'js-sha3';
+import {hexToBytes} from '.';
+import {requireOrFail} from './requireOrFail';
 
 const bytesLength = (a: string) => (a.length - 2) / 2;
 const bytesSlice = (i: number, j: number, bs: string) =>
@@ -30,7 +30,7 @@ const toChecksum = (address: string) => {
 const getSecp256k1 = () => {
   const elliptic = requireOrFail('elliptic', 'elliptic', '^6.5.3');
   return new elliptic.ec('secp256k1');
-}
+};
 
 export const hashMessage = (message: string): string => {
   const messageBytes = hexToBytes(Buffer.from(message, 'utf8').toString('hex'));

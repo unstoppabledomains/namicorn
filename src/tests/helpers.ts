@@ -1,22 +1,28 @@
 import nock from 'nock';
 import _ from 'lodash';
-import { Dictionary } from '../types';
+import {Dictionary} from '../types';
 import mockData from './testData/mockData.json';
-import ResolutionError, { ResolutionErrorCode } from '../errors/resolutionError';
-import ConfigurationError, { ConfigurationErrorCode } from '../errors/configurationError';
-import DnsRecordsError, { DnsRecordsErrorCode } from '../errors/dnsRecordsError';
-import { NamingServiceName } from '../types/publicTypes';
+import ResolutionError, {ResolutionErrorCode} from '../errors/resolutionError';
+import ConfigurationError, {
+  ConfigurationErrorCode,
+} from '../errors/configurationError';
+import DnsRecordsError, {DnsRecordsErrorCode} from '../errors/dnsRecordsError';
+import {NamingServiceName} from '../types/publicTypes';
 
 export const MainnetUrl = 'https://mainnet.infura.io';
 export const ZilliqaUrl = 'https://api.zilliqa.com';
 export const DefaultUrl = 'https://unstoppabledomains.com/api/v1';
 
 export const CryptoDomainWithoutResolver = 'twistedmusic.crypto';
-export const CryptoDomainWithTwitterVerification = 'ijustwannatestsomething2.crypto';
+export const CryptoDomainWithTwitterVerification =
+  'ijustwannatestsomething2.crypto';
 export const CryptoDomainWithUsdtMultiChainRecords = 'udtestdev-usdt.crypto';
-export const ZilDomainWithUsdtMultiChainRecords = 'reseller-test-udtesting-422508414817.zil';
-export const CryptoDomainWithAllRecords = 'udtestdev-reseller-test-udtesting-875948372642.crypto';
-export const CryptoDomainWithoutGunDbRecords = 'udtestdev-reseller-test-udtesting-875948372642.crypto';
+export const ZilDomainWithUsdtMultiChainRecords =
+  'reseller-test-udtesting-422508414817.zil';
+export const CryptoDomainWithAllRecords =
+  'udtestdev-reseller-test-udtesting-875948372642.crypto';
+export const CryptoDomainWithoutGunDbRecords =
+  'udtestdev-reseller-test-udtesting-875948372642.crypto';
 
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -26,7 +32,11 @@ try {
   console.warn('dotenv is not installed');
 }
 
-export function mockAsyncMethod(object: any, method: string, value: any): jest.SpyInstance {
+export function mockAsyncMethod(
+  object: any,
+  method: string,
+  value: any,
+): jest.SpyInstance {
   const spy = jest.spyOn(object, method);
   if (!isLive()) {
     if (value instanceof Function) {
@@ -38,11 +48,13 @@ export function mockAsyncMethod(object: any, method: string, value: any): jest.S
     }
   }
 
-
   return spy;
 }
 
-export function mockAsyncMethods(object: any, methods: Dictionary<any>): jest.SpyInstance[] {
+export function mockAsyncMethods(
+  object: any,
+  methods: Dictionary<any>,
+): jest.SpyInstance[] {
   return Object.entries(methods).map((method) =>
     mockAsyncMethod(object, method[0], method[1]),
   );
@@ -60,10 +72,13 @@ export function pendingInLive(): void {
   }
 }
 
-export function expectSpyToBeCalled(spies: jest.SpyInstance[], times?: number): void {
+export function expectSpyToBeCalled(
+  spies: jest.SpyInstance[],
+  times?: number,
+): void {
   if (!isLive()) {
     spies.forEach((spy) => {
-      times ? expect(spy).toBeCalledTimes(times) : expect(spy).toBeCalled()
+      times ? expect(spy).toBeCalledTimes(times) : expect(spy).toBeCalled();
     });
   }
 }
@@ -89,7 +104,10 @@ export async function expectDnsRecordErrorCode(
   return expectError(callback, code, DnsRecordsError);
 }
 
-type ErrorClass = typeof ResolutionError | typeof ConfigurationError | typeof DnsRecordsError
+type ErrorClass =
+  | typeof ResolutionError
+  | typeof ConfigurationError
+  | typeof DnsRecordsError;
 
 async function expectError(
   callback: Promise<any> | Function,
@@ -104,7 +122,6 @@ async function expectError(
       } else {
         resolve(result);
       }
-
     });
   }
 
@@ -119,7 +136,6 @@ async function expectError(
       } else {
         throw error;
       }
-
     },
   );
 }
@@ -132,21 +148,21 @@ export function mockAPICalls(testName: string, url = MainnetUrl): void {
   const mcdt = mockData as any;
   const mockCall = mcdt[testName] as [any];
 
-  mockCall.forEach(({ METHOD, REQUEST, RESPONSE }) => {
+  mockCall.forEach(({METHOD, REQUEST, RESPONSE}) => {
     switch (METHOD) {
-    case 'POST': {
-      nock(url)
-      // .log()
-        .post('/', JSON.stringify(REQUEST), undefined)
-        .reply(200, JSON.stringify(RESPONSE));
-      break;
-    }
-    default: {
-      nock(url)
-      // .log()
-        .get(REQUEST as string, undefined, undefined)
-        .reply(200, RESPONSE);
-    }
+      case 'POST': {
+        nock(url)
+          // .log()
+          .post('/', JSON.stringify(REQUEST), undefined)
+          .reply(200, JSON.stringify(RESPONSE));
+        break;
+      }
+      default: {
+        nock(url)
+          // .log()
+          .get(REQUEST as string, undefined, undefined)
+          .reply(200, RESPONSE);
+      }
     }
   });
 }
@@ -158,40 +174,51 @@ export function mockAPICalls(testName: string, url = MainnetUrl): void {
  */
 export function protocolLink(
   providerProtocol: ProviderProtocol = ProviderProtocol.http,
-  namingService: NamingServiceName.ENS | NamingServiceName.CNS = NamingServiceName.CNS,
+  namingService:
+    | NamingServiceName.ENS
+    | NamingServiceName.CNS = NamingServiceName.CNS,
 ): string {
-  const secret = process.env.UNSTOPPABLE_RESOLUTION_INFURA_PROJECTID ?? undefined;
+  const secret =
+    process.env.UNSTOPPABLE_RESOLUTION_INFURA_PROJECTID ?? undefined;
 
   if (!secret) {
     return ethereumDefaultProviders[namingService][providerProtocol];
   }
 
-  return providerProtocol === ProviderProtocol.wss ?
-    `wss://mainnet.infura.io/ws/v3/${secret}` :
-    `https://mainnet.infura.io/v3/${secret}`;
+  return providerProtocol === ProviderProtocol.wss
+    ? `wss://mainnet.infura.io/ws/v3/${secret}`
+    : `https://mainnet.infura.io/v3/${secret}`;
 }
 
 export enum ProviderProtocol {
-  'http' = 'http', 'wss' = 'wss'
+  'http' = 'http',
+  'wss' = 'wss',
 }
 
-export const caseMock = <T, U>(params: T, cases: { request: T, response: U }[]): U => {
-  for (const { request, response } of cases) {
+export const caseMock = <T, U>(
+  params: T,
+  cases: {request: T; response: U}[],
+): U => {
+  for (const {request, response} of cases) {
     if (_.isEqual(params, request)) {
       return response;
     }
   }
-  
+
   throw new Error(`got unexpected params ${JSON.stringify(params)}`);
 };
 
 const ethereumDefaultProviders = {
   [NamingServiceName.ENS]: {
-    [ProviderProtocol.http]: 'https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee',
-    [ProviderProtocol.wss]: 'wss://mainnet.infura.io/ws/v3/d423cf2499584d7fbe171e33b42cfbee',
+    [ProviderProtocol.http]:
+      'https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee',
+    [ProviderProtocol.wss]:
+      'wss://mainnet.infura.io/ws/v3/d423cf2499584d7fbe171e33b42cfbee',
   },
   [NamingServiceName.CNS]: {
-    [ProviderProtocol.http]: 'https://mainnet.infura.io/v3/c4bb906ed6904c42b19c95825fe55f39',
-    [ProviderProtocol.wss]: 'wss://mainnet.infura.io/ws/v3/c4bb906ed6904c42b19c95825fe55f39',
+    [ProviderProtocol.http]:
+      'https://mainnet.infura.io/v3/c4bb906ed6904c42b19c95825fe55f39',
+    [ProviderProtocol.wss]:
+      'wss://mainnet.infura.io/ws/v3/c4bb906ed6904c42b19c95825fe55f39',
   },
 };

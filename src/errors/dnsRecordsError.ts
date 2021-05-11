@@ -1,13 +1,13 @@
-import { DnsRecordType } from '../types/publicTypes';
+import {DnsRecordType} from '../types/publicTypes';
 type DnsRecordsErrorHandler = (error: DnsRecordsErrorOptions) => string;
 /** Explains DnsRecords Error options */
 type DnsRecordsErrorOptions = {
-  recordType?: DnsRecordType
+  recordType?: DnsRecordType;
 };
 
 export enum DnsRecordsErrorCode {
-  InconsistentTtl = "InconsistentTtl",
-  DnsRecordCorrupted = "DnsRecordCorrupted"
+  InconsistentTtl = 'InconsistentTtl',
+  DnsRecordCorrupted = 'DnsRecordCorrupted',
 }
 
 /**
@@ -15,8 +15,10 @@ export enum DnsRecordsErrorCode {
  * Internal Mapping object from DnsRecordsErrorCode to a DnsRecordsErrorHandler
  */
 const HandlersByCode = {
-  [DnsRecordsErrorCode.InconsistentTtl]: (params: DnsRecordsErrorOptions) => `ttl for record ${params.recordType} is different for other records of the same type`,
-  [DnsRecordsErrorCode.DnsRecordCorrupted]: (params: DnsRecordsErrorOptions) => `dns record ${params.recordType} is invalid json-string`
+  [DnsRecordsErrorCode.InconsistentTtl]: (params: DnsRecordsErrorOptions) =>
+    `ttl for record ${params.recordType} is different for other records of the same type`,
+  [DnsRecordsErrorCode.DnsRecordCorrupted]: (params: DnsRecordsErrorOptions) =>
+    `dns record ${params.recordType} is invalid json-string`,
 };
 
 /**
@@ -31,12 +33,8 @@ export class DnsRecordsError extends Error {
   readonly code: DnsRecordsErrorCode;
   readonly method?: string;
 
-  constructor(
-    code: DnsRecordsErrorCode,
-    options: DnsRecordsErrorOptions = {},
-  ) {
-    const DnsRecordsErrorHandler: DnsRecordsErrorHandler =
-      HandlersByCode[code];
+  constructor(code: DnsRecordsErrorCode, options: DnsRecordsErrorOptions = {}) {
+    const DnsRecordsErrorHandler: DnsRecordsErrorHandler = HandlersByCode[code];
     super(DnsRecordsErrorHandler(options));
     this.code = code;
     this.name = 'DnsRecordsError';

@@ -1,11 +1,9 @@
-import { RequestArguments } from '../types';
+import {RequestArguments} from '../types';
 import {
   ConfigurationError,
   ConfigurationErrorCode,
 } from '../errors/configurationError';
-import ResolutionError, {
-  ResolutionErrorCode,
-} from '../errors/resolutionError';
+import ResolutionError, {ResolutionErrorCode} from '../errors/resolutionError';
 import {
   Web3Version0Provider,
   Provider,
@@ -112,17 +110,17 @@ function fromEthersProvider(provider: EthersProvider): Provider {
     request: async (request: RequestArguments) => {
       try {
         switch (request.method) {
-        case 'eth_call':
-          return await provider.call(request.params![0]);
-        case 'eth_getLogs':
-          return await provider.getLogs(request.params![0]);
-        default:
-          throw new ResolutionError(
-            ResolutionErrorCode.ServiceProviderError,
-            {
-              providerMessage: `Unsupported provider method ${request.method}`,
-            },
-          );
+          case 'eth_call':
+            return await provider.call(request.params![0]);
+          case 'eth_getLogs':
+            return await provider.getLogs(request.params![0]);
+          default:
+            throw new ResolutionError(
+              ResolutionErrorCode.ServiceProviderError,
+              {
+                providerMessage: `Unsupported provider method ${request.method}`,
+              },
+            );
         }
       } catch (error) {
         throw new ResolutionError(ResolutionErrorCode.ServiceProviderError, {

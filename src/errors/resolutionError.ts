@@ -1,4 +1,4 @@
-import { ResolutionMethod } from '../types/publicTypes';
+import {ResolutionMethod} from '../types/publicTypes';
 /**
  * Alias for Resolution error handler function
  * @internal
@@ -34,11 +34,11 @@ export enum ResolutionErrorCode {
  * Internal Mapping object from ResolutionErrorCode to a ResolutionErrorHandler
  */
 const HandlersByCode = {
-  [ResolutionErrorCode.UnregisteredDomain]: (params: { domain: string }) =>
+  [ResolutionErrorCode.UnregisteredDomain]: (params: {domain: string}) =>
     `Domain ${params.domain} is not registered`,
-  [ResolutionErrorCode.UnspecifiedResolver]: (params: { domain: string }) =>
+  [ResolutionErrorCode.UnspecifiedResolver]: (params: {domain: string}) =>
     `Domain ${params.domain} is not configured`,
-  [ResolutionErrorCode.UnsupportedDomain]: (params: { domain: string }) =>
+  [ResolutionErrorCode.UnsupportedDomain]: (params: {domain: string}) =>
     `Domain ${params.domain} is not supported`,
   [ResolutionErrorCode.UnsupportedMethod]: (params: {
     methodName: string;
@@ -61,7 +61,8 @@ const HandlersByCode = {
   [ResolutionErrorCode.ServiceProviderError]: (params: {
     providerMessage?: string;
   }) => `< ${params.providerMessage} >`,
-  [ResolutionErrorCode.UnsupportedService]: (params: {namingService: string}) => `Naming service ${params.namingService} is not supported`,
+  [ResolutionErrorCode.UnsupportedService]: (params: {namingService: string}) =>
+    `Naming service ${params.namingService} is not supported`,
 };
 
 /**
@@ -85,7 +86,7 @@ export class ResolutionError extends Error {
 
   constructor(code: ResolutionErrorCode, options: ResolutionErrorOptions = {}) {
     const resolutionErrorHandler: ResolutionErrorHandler = HandlersByCode[code];
-    const { domain, method, currencyTicker } = options;
+    const {domain, method, currencyTicker} = options;
     const message = resolutionErrorHandler(options);
 
     super(message);

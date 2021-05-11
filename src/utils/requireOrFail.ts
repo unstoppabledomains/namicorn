@@ -1,4 +1,6 @@
-import ConfigurationError, { ConfigurationErrorCode } from '../errors/configurationError';
+import ConfigurationError, {
+  ConfigurationErrorCode,
+} from '../errors/configurationError';
 
 /**
  * Function tries to require module and throw error if module is not found.
@@ -7,14 +9,18 @@ import ConfigurationError, { ConfigurationErrorCode } from '../errors/configurat
  * @param allowedVersions Allowed versions of requested module
  * @throws ConfigurationError
  */
-export function requireOrFail(module: string, dependencyName: string, allowedVersions: string): any {
+export function requireOrFail(
+  module: string,
+  dependencyName: string,
+  allowedVersions: string,
+): any {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(module)
+    return require(module);
   } catch (e) {
     throw new ConfigurationError(ConfigurationErrorCode.DependencyMissing, {
       dependency: dependencyName,
-      version: allowedVersions
-    })
+      version: allowedVersions,
+    });
   }
 }

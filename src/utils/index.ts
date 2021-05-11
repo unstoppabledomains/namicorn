@@ -1,5 +1,5 @@
-import { CryptoRecords, NamingServiceName } from '../types/publicTypes';
-import {  NullAddresses } from '../types';
+import {CryptoRecords, NamingServiceName} from '../types/publicTypes';
+import {NullAddresses} from '../types';
 
 export function signedInfuraLink(infura: string, network = 'mainnet'): string {
   return `https://${network}.infura.io/v3/${infura}`;
@@ -30,35 +30,38 @@ export function constructRecords(
 ): CryptoRecords {
   const records: CryptoRecords = {};
   keys.forEach((key, index) => {
-    records[key] = (values instanceof Array ? values[index] : values?.[key]) || '';
+    records[key] =
+      (values instanceof Array ? values[index] : values?.[key]) || '';
   });
   return records;
 }
 
 export const domainExtensionToNamingServiceName = {
-  "crypto": NamingServiceName.CNS,
-  "zil": NamingServiceName.ZNS,
-  "eth": NamingServiceName.ENS,
-  "luxe": NamingServiceName.ENS,
-  "xyz": NamingServiceName.ENS,
-  "kred": NamingServiceName.ENS,
-  "reverse": NamingServiceName.ENS
-}
+  crypto: NamingServiceName.CNS,
+  zil: NamingServiceName.ZNS,
+  eth: NamingServiceName.ENS,
+  luxe: NamingServiceName.ENS,
+  xyz: NamingServiceName.ENS,
+  kred: NamingServiceName.ENS,
+  reverse: NamingServiceName.ENS,
+};
 
 export const findNamingServiceName = (domain: string): NamingServiceName => {
-  return domainExtensionToNamingServiceName[domain.split('.').pop() || ''] || '';
-}
+  return (
+    domainExtensionToNamingServiceName[domain.split('.').pop() || ''] || ''
+  );
+};
 
 export const EthereumNetworks = {
-  "mainnet": 1,
-  "ropsten": 3,
-  "rinkeby": 4,
-  "goerli": 5,
+  mainnet: 1,
+  ropsten: 3,
+  rinkeby: 4,
+  goerli: 5,
 } as const;
 
 export const EthereumNetworksInverted = {
-  1: "mainnet",
-  3: "ropsten",
-  4: "rinkeby",
-  5: "goerli",
+  1: 'mainnet',
+  3: 'ropsten',
+  4: 'rinkeby',
+  5: 'goerli',
 } as const;

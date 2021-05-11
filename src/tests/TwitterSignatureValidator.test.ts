@@ -1,4 +1,4 @@
-import { isValidTwitterSignature } from '../utils/TwitterSignatureValidator';
+import {isValidTwitterSignature} from '../utils/TwitterSignatureValidator';
 
 describe('TwitterSignatureValidator', () => {
   it('should return true for valid signature', () => {

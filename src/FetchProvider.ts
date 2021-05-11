@@ -1,6 +1,6 @@
-import { RequestArguments } from './types';
-import ResolutionError, { ResolutionErrorCode } from './errors/resolutionError';
-import { ResolutionMethod, Provider } from './types/publicTypes';
+import {RequestArguments} from './types';
+import ResolutionError, {ResolutionErrorCode} from './errors/resolutionError';
+import {ResolutionMethod, Provider} from './types/publicTypes';
 import Networking from './utils/Networking';
 
 export default class FetchProvider implements Provider {
@@ -27,7 +27,12 @@ export default class FetchProvider implements Provider {
     return json.result;
   }
 
-  protected async fetchJson(args: RequestArguments): Promise<{error: {message: string}, result: undefined} | {error: undefined, result: unknown}> {
+  protected async fetchJson(
+    args: RequestArguments,
+  ): Promise<
+    | {error: {message: string}; result: undefined}
+    | {error: undefined; result: unknown}
+  > {
     const response = await Networking.fetch(this.url, {
       method: 'POST',
       body: JSON.stringify({

@@ -9,4 +9,4 @@ beforeAll(() => {
 
 afterAll(() => {
   nock.enableNetConnect();
-})
+});

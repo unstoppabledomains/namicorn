@@ -3,9 +3,8 @@
  * All functionality below came from here https://github.com/Zilliqa/Zilliqa-JavaScript-Library/tree/dev/packages/zilliqa-js-crypto/src
  */
 
-
 import BN from 'bn.js';
-import { sha256 } from 'js-sha256';
+import {sha256} from 'js-sha256';
 import {hexToBytes} from './index';
 
 const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
@@ -17,11 +16,9 @@ const HRP = 'zil';
 
 const tHRP = 'tzil';
 
-
 function isByteString(str: string, len: number) {
   return !!str.replace('0x', '').match(`^[0-9a-fA-F]{${len}}$`);
 }
-
 
 function isAddress(address: string) {
   return isByteString(address, 40);
@@ -70,15 +67,12 @@ function convertBits(
     if (bits > 0) {
       ret.push((acc << (toWidth - bits)) & maxv);
     }
-
   } else if (bits >= fromWidth || (acc << (toWidth - bits)) & maxv) {
     return null;
   }
 
-
   return Buffer.from(ret);
 }
-
 
 function hrpExpand(hrp: string): Buffer {
   const ret: any[] = [];
@@ -95,7 +89,6 @@ function hrpExpand(hrp: string): Buffer {
   return Buffer.from(ret);
 }
 
-
 function polymod(values: Buffer): number {
   let chk = 1;
   // tslint:disable-next-line
@@ -107,12 +100,9 @@ function polymod(values: Buffer): number {
         chk ^= GENERATOR[i];
       }
     }
-
-
   }
   return chk;
 }
-
 
 function createChecksum(hrp: string, data: Buffer) {
   const values = Buffer.concat([
@@ -130,11 +120,9 @@ function createChecksum(hrp: string, data: Buffer) {
   return Buffer.from(ret);
 }
 
-
 function verifyChecksum(hrp: string, data: Buffer) {
   return polymod(Buffer.concat([hrpExpand(hrp), data])) === 1;
 }
-
 
 function encode(hrp: string, data: Buffer) {
   const combined = Buffer.concat([data, createChecksum(hrp, data)]);
@@ -146,7 +134,6 @@ function encode(hrp: string, data: Buffer) {
 
   return ret;
 }
-
 
 function decode(bechString: string) {
   let p;
@@ -164,7 +151,6 @@ function decode(bechString: string) {
     if (bechString.charCodeAt(p) >= 65 && bechString.charCodeAt(p) <= 90) {
       hasUpper = true;
     }
-
   }
   if (hasLower && hasUpper) {
     return null;
@@ -191,8 +177,7 @@ function decode(bechString: string) {
     return null;
   }
 
-
-  return { hrp, data: Buffer.from(data.slice(0, data.length - 6)) };
+  return {hrp, data: Buffer.from(data.slice(0, data.length - 6))};
 }
 
 /**
@@ -207,23 +192,20 @@ export const toChecksumAddress = (address: string): string => {
     throw new Error(`${address} is not a valid base 16 address`);
   }
 
-
   address = address.toLowerCase().replace('0x', '');
   const hash = sha256(hexToBytes(address));
-  const v = new BN((hash as unknown) as string, 'hex', 'be');
+  const v = new BN(hash as unknown as string, 'hex', 'be');
   let ret = '0x';
 
   for (let i = 0; i < address.length; i++) {
     if ('0123456789'.indexOf(address[i]) !== -1) {
       ret += address[i];
     } else {
-      ret += v.and(new BN(2).pow(new BN(255 - 6 * i))).gte(new BN(1)) ?
-        address[i].toUpperCase() :
-        address[i].toLowerCase();
+      ret += v.and(new BN(2).pow(new BN(255 - 6 * i))).gte(new BN(1))
+        ? address[i].toUpperCase()
+        : address[i].toLowerCase();
     }
   }
-
-
 
   return ret;
 };
@@ -240,14 +222,10 @@ export const toChecksumAddress = (address: string): string => {
  * @param {boolean} testnet
  * @returns {string} 38 char bech32 encoded zilliqa address
  */
-export function toBech32Address(
-  address: string,
-  testnet = false,
-): string {
+export function toBech32Address(address: string, testnet = false): string {
   if (!isAddress(address)) {
     throw new Error('Invalid address format.');
   }
-
 
   const addrBz = convertBits(
     Buffer.from(address.replace('0x', ''), 'hex'),
@@ -259,7 +237,6 @@ export function toBech32Address(
     throw new Error('Could not convert byte Buffer to 5-bit Buffer');
   }
 
-
   return encode(testnet ? tHRP : HRP, addrBz);
 }
 
@@ -269,31 +246,25 @@ export function toBech32Address(
  * @param {boolean} testnet
  * @returns {string} a canonical 20-byte Ethereum-style address
  */
-export function fromBech32Address(
-  address: string,
-  testnet = false,
-): string {
+export function fromBech32Address(address: string, testnet = false): string {
   const res = decode(address);
 
   if (res === null) {
     throw new Error('Invalid bech32 address');
   }
 
-
-  const { hrp, data } = res;
+  const {hrp, data} = res;
 
   const shouldBe = testnet ? tHRP : HRP;
   if (hrp !== shouldBe) {
     throw new Error(`Expected hrp to be ${shouldBe} but got ${hrp}`);
   }
 
-
   const buf = convertBits(data, 5, 8, false);
 
   if (buf === null) {
     throw new Error('Could not convert buffer to bytes');
   }
-
 
   return toChecksumAddress(buf.toString('hex'));
 }

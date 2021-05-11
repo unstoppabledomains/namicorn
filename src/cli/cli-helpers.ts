@@ -1,5 +1,5 @@
 import Resolution from '../Resolution';
-import { ResolutionErrorCode } from '..';
+import {ResolutionErrorCode} from '..';
 
 export async function tryInfo(
   method: () => any,
@@ -14,7 +14,7 @@ export async function tryInfo(
     if (Object.values(ResolutionErrorCode).includes(err.code)) {
       response[field] = err.code;
     } else {
-      response[field] = err.message
+      response[field] = err.message;
     }
     return false;
   }
@@ -27,11 +27,12 @@ export function commaSeparatedList(value: string): string[] {
 export function buildResolutionPackage(ethereumUrl?: string): Resolution {
   if (ethereumUrl) {
     try {
-      const url = (new URL(ethereumUrl)).toString();
-      return new Resolution({ sourceConfig: {
-        ens: { url, network: "mainnet" },
-        cns: { url, network: "mainnet" },
-      }
+      const url = new URL(ethereumUrl).toString();
+      return new Resolution({
+        sourceConfig: {
+          ens: {url, network: 'mainnet'},
+          cns: {url, network: 'mainnet'},
+        },
       });
     } catch (e) {
       if (e instanceof TypeError) {
@@ -43,4 +44,3 @@ export function buildResolutionPackage(ethereumUrl?: string): Resolution {
   }
   return new Resolution();
 }
-

@@ -16,7 +16,11 @@ import {
       'comma separated list of currency tickers',
       commaSeparatedList,
     )
-    .option('--usdt-versions <usdtVersions>', 'comma separated list of USDT token versions (OMNI, TRON, ERC20, EOS)', commaSeparatedList)
+    .option(
+      '--usdt-versions <usdtVersions>',
+      'comma separated list of USDT token versions (OMNI, TRON, ERC20, EOS)',
+      commaSeparatedList,
+    )
     .option('-s, --service', 'returns you a service name from the domain')
     .option('-i, --ipfs', 'get IpfsHash')
     .option('-r, --resolver', 'get resolver address')
@@ -26,11 +30,17 @@ import {
     .option('-o, --owner', `returns domain's owner`)
     .option('-g, --gundb', `returns gundb chat id`)
     .option('-m, --meta', 'shortcut for all meta data options (-siren)')
-    .option('-t, --twitter', 'returns verified Twitter handle (only available for cns domains)')
+    .option(
+      '-t, --twitter',
+      'returns verified Twitter handle (only available for cns domains)',
+    )
     .option('-d, --domain <domain>', 'domain you wish to resolve')
     .option('-k, --recordKey <recordkey>', 'custom domain record')
-    .option('-a, --all', 'get all keys stored under a domain' )
-    .option('--ethereum-url <ethereumUrl>', 'specify custom ethereum provider/url')
+    .option('-a, --all', 'get all keys stored under a domain')
+    .option(
+      '--ethereum-url <ethereumUrl>',
+      'specify custom ethereum provider/url',
+    )
     .description(
       'resolution cli exports main usage of @unstoppabledomains/resolution library',
     );
@@ -54,47 +64,91 @@ import {
     return;
   }
 
-  const { domain } = options;
+  const {domain} = options;
   delete options.domain;
 
   const resolution = buildResolutionPackage(options.ethereumUrl);
   const response = {};
 
   const commandTable = {
-    ipfs: () => tryInfo(async () => {
-      const result = {};
-      result['ipfsHash'] = await resolution.ipfsHash(domain).catch((err) => err.code);
-      result['redirect_url'] = await resolution.httpUrl(domain).catch((err) => err.code);
-      return result;
-    }, response, 'ipfs'),
-    email: () => tryInfo(async () => await resolution.email(domain), response, 'email'),
-    resolver: () => tryInfo(async () => await resolution.resolver(domain), response, 'resolver'),
-    service: () => tryInfo(() => resolution.serviceName(domain), response, 'service'),
-    namehash: () => tryInfo(() => resolution.namehash(domain), response, 'namehash'),
-    namehashDecimal: () => tryInfo(() => resolution.namehash(domain, {format: "dec"}), response, 'namehash-decimal'),
-    owner: () => tryInfo(async () => await resolution.owner(domain), response, 'owner'),
-    gundb: () => tryInfo(async () => {
-      const result = {};
-      result['id'] = await resolution.chatId(domain);
-      result['public_key'] = await resolution.chatPk(domain);
-      return result;
-    }, response, 'gundb'),
-    recordKey: () => tryInfo(async () => await resolution.record(domain, options.recordKey), response, options.recordKey),
-    gunPk: () => tryInfo(async () => await resolution.chatPk(domain), response, 'gundbPk'),
-    all: () => tryInfo(async () => {
-      const records = await resolution.allRecords(domain);
-      Object.entries(records).forEach(([key, value]) => 
-        (key && !value ) && (delete records[key])
-      )
-      return records;
-    }, response, 'records'),
-    twitter: () => tryInfo(async () => await resolution.twitter(domain), response, 'twitter'),
+    ipfs: () =>
+      tryInfo(
+        async () => {
+          const result = {};
+          result['ipfsHash'] = await resolution
+            .ipfsHash(domain)
+            .catch((err) => err.code);
+          result['redirect_url'] = await resolution
+            .httpUrl(domain)
+            .catch((err) => err.code);
+          return result;
+        },
+        response,
+        'ipfs',
+      ),
+    email: () =>
+      tryInfo(async () => await resolution.email(domain), response, 'email'),
+    resolver: () =>
+      tryInfo(
+        async () => await resolution.resolver(domain),
+        response,
+        'resolver',
+      ),
+    service: () =>
+      tryInfo(() => resolution.serviceName(domain), response, 'service'),
+    namehash: () =>
+      tryInfo(() => resolution.namehash(domain), response, 'namehash'),
+    namehashDecimal: () =>
+      tryInfo(
+        () => resolution.namehash(domain, {format: 'dec'}),
+        response,
+        'namehash-decimal',
+      ),
+    owner: () =>
+      tryInfo(async () => await resolution.owner(domain), response, 'owner'),
+    gundb: () =>
+      tryInfo(
+        async () => {
+          const result = {};
+          result['id'] = await resolution.chatId(domain);
+          result['public_key'] = await resolution.chatPk(domain);
+          return result;
+        },
+        response,
+        'gundb',
+      ),
+    recordKey: () =>
+      tryInfo(
+        async () => await resolution.record(domain, options.recordKey),
+        response,
+        options.recordKey,
+      ),
+    gunPk: () =>
+      tryInfo(async () => await resolution.chatPk(domain), response, 'gundbPk'),
+    all: () =>
+      tryInfo(
+        async () => {
+          const records = await resolution.allRecords(domain);
+          Object.entries(records).forEach(
+            ([key, value]) => key && !value && delete records[key],
+          );
+          return records;
+        },
+        response,
+        'records',
+      ),
+    twitter: () =>
+      tryInfo(
+        async () => await resolution.twitter(domain),
+        response,
+        'twitter',
+      ),
   };
 
   const resolutionProcess: Promise<boolean>[] = [];
   // Execute resolution for each currency
   if (options.currencies) {
-    options.currencies.forEach((currency:string) => {
+    options.currencies.forEach((currency: string) => {
       resolutionProcess.push(
         tryInfo(
           async () => await resolution.addr(domain, currency),
@@ -106,10 +160,11 @@ import {
     delete options.currencies;
   }
   if (options.usdtVersions) {
-    options.usdtVersions.forEach((usdtVersion:string) => {
+    options.usdtVersions.forEach((usdtVersion: string) => {
       resolutionProcess.push(
         tryInfo(
-          async () => await resolution.multiChainAddr(domain, "usdt", usdtVersion),
+          async () =>
+            await resolution.multiChainAddr(domain, 'usdt', usdtVersion),
           response,
           usdtVersion,
         ),
@@ -119,7 +174,9 @@ import {
   }
   delete options.ethereumUrl;
   // Execute the rest of options
-  Object.keys(options).forEach((option) => resolutionProcess.push(commandTable[option]()));
+  Object.keys(options).forEach((option) =>
+    resolutionProcess.push(commandTable[option]()),
+  );
 
   await Promise.all(resolutionProcess);
   console.log(JSON.stringify(response, undefined, 4));

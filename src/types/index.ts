@@ -1,6 +1,6 @@
-import { Provider } from "./publicTypes";
+import {Provider} from './publicTypes';
 
-export type Dictionary<T> = { [k: string]: T };
+export type Dictionary<T> = {[k: string]: T};
 export type EnsNetworkIdMap = {
   [key: number]: string;
 };
@@ -78,7 +78,7 @@ export interface RpcProviderLogEntry {
  * @typedef {object} ZnsResolution
  */
 export type ZnsResolution = {
-  crypto?: Dictionary<{ address?: string; [key: string]: any }>;
+  crypto?: Dictionary<{address?: string; [key: string]: any}>;
   ttl?: string;
   [key: string]: any;
 };
@@ -97,7 +97,7 @@ export const EthCoinIndex = '60';
 
 // TypeScript will infer a string union type from the literal values passed to
 // this function. Without `extends string`, it would instead generalize them
-// to the common string type. 
+// to the common string type.
 // @see https://stackoverflow.com/questions/36836011/checking-validity-of-string-literal-union-type-at-runtime
 const StringUnion = <UnionType extends string>(...values: UnionType[]) => {
   Object.freeze(values);
@@ -110,20 +110,29 @@ const StringUnion = <UnionType extends string>(...values: UnionType[]) => {
   const check = (value: string): UnionType => {
     if (!guard(value)) {
       const actual = JSON.stringify(value);
-      const expected = values.map(s => JSON.stringify(s)).join(' | ');
-      throw new TypeError(`Value '${actual}' is not assignable to type '${expected}'.`);
+      const expected = values.map((s) => JSON.stringify(s)).join(' | ');
+      throw new TypeError(
+        `Value '${actual}' is not assignable to type '${expected}'.`,
+      );
     }
     return value;
   };
 
   const unionNamespace = {guard, check, values};
-  return Object.freeze(unionNamespace as typeof unionNamespace & {type: UnionType});
+  return Object.freeze(
+    unionNamespace as typeof unionNamespace & {type: UnionType},
+  );
 };
 
-export const CnsSupportedNetwork = StringUnion("mainnet", "rinkeby") 
-export const EnsSupportedNetwork = StringUnion("mainnet", "rinkeby", "goerli", "ropsten") 
-export const ZnsSupportedNetwork = StringUnion("mainnet") 
+export const CnsSupportedNetwork = StringUnion('mainnet', 'rinkeby');
+export const EnsSupportedNetwork = StringUnion(
+  'mainnet',
+  'rinkeby',
+  'goerli',
+  'ropsten',
+);
+export const ZnsSupportedNetwork = StringUnion('mainnet');
 
-export function hasProvider(obj: any): obj is { provider: Provider } {
+export function hasProvider(obj: any): obj is {provider: Provider} {
   return obj && !!obj.provider;
 }
