@@ -1,3 +1,6 @@
+## 2.2.0
+* Allow custom network configuration for CNS and ZNS which could be useful for integration testing.
+
 ## 2.1.0
 * Introduce new factory method Resolution#autonetwork. This factory is asynchronious and allows to skip the network configuration for either ens or cns. This method is making a "net_version" call to the blockchain provider in order to configure itself.
 
