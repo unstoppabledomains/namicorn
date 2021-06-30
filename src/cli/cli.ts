@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import program from 'commander';
 import pckg from '../package.json';
+import {NamingServiceName} from '../types/publicTypes';
 import {
   buildResolutionPackage,
   commaSeparatedList,
@@ -32,7 +33,7 @@ import {
     .option('-m, --meta', 'shortcut for all meta data options (-siren)')
     .option(
       '-t, --twitter',
-      'returns verified Twitter handle (only available for cns domains)',
+      'returns verified Twitter handle (only available for uns domains)',
     )
     .option('-d, --domain <domain>', 'domain you wish to resolve')
     .option('-k, --recordKey <recordkey>', 'custom domain record')
@@ -41,6 +42,16 @@ import {
       '--ethereum-url <ethereumUrl>',
       'specify custom ethereum provider/url',
     )
+    .option('--token-uri', `returns the token metadata URI`)
+    .option(
+      '--token-uri-meta',
+      `returns the token metadata retrieved from the metadata URI`,
+    )
+    .option(
+      '-u, --unhash <hash>',
+      `gets the domain name by hash from token metadata (only for UNS)`,
+    )
+    .option('--supported', `checks if the domain name is supported`)
     .description(
       'resolution cli exports main usage of @unstoppabledomains/resolution library',
     );
@@ -60,7 +71,7 @@ import {
     delete options.meta;
   }
 
-  if (!options.domain) {
+  if (!options.domain && !options.unhash) {
     return;
   }
 
@@ -142,6 +153,31 @@ import {
         async () => await resolution.twitter(domain),
         response,
         'twitter',
+      ),
+    tokenUri: () =>
+      tryInfo(
+        async () => await resolution.tokenURI(domain),
+        response,
+        'token-uri',
+      ),
+    tokenUriMeta: () =>
+      tryInfo(
+        async () => await resolution.tokenURIMetadata(domain),
+        response,
+        'token-uri-meta',
+      ),
+    unhash: () =>
+      tryInfo(
+        async () =>
+          await resolution.unhash(options.unhash, NamingServiceName.UNS),
+        response,
+        'unhash',
+      ),
+    supported: () =>
+      tryInfo(
+        async () => await resolution.isSupportedDomain(domain),
+        response,
+        'supported',
       ),
   };
 

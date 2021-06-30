@@ -69,5 +69,149 @@
         }
       }
     }
+  ],
+  "uns_domain_exists_test": [
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0x4f558e790f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0x4f558e794118ebbd893ecbb9f5d7a817c7d8039c1bd991b56ea243e2ae84d0a1b2c950a7",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0x4f558e795c828ec285c0bf152a30a325b3963661a80cb87641d60920344caf04d4a0f31e",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0x4f558e79ed0afd72b0ca62d74b891a3c8a70d90f88b8c386f188fd455bc53f58f0079334",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ],
+  "uns_registry_address_tests": [
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f90f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x000000000000000000000000aad76bea7cfec82927239415bb18d2e93518ecbb"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f95c828ec285c0bf152a30a325b3963661a80cb87641d60920344caf04d4a0f31e",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000007fb83000b8ed59d3ead22f0d584df3a85fbc0086"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f999140b022179d52bbdec6856ab7deae20ff32ae688e229f6c92bcc454a7b3a63",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
   ]
 }

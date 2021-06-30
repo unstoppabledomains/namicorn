@@ -1,6 +1,9 @@
 import {Provider} from './publicTypes';
 
 export type Dictionary<T> = {[k: string]: T};
+export type EnsNetworkIdMap = {
+  [key: number]: string;
+};
 export interface BlockhanNetworkUrlMap {
   [key: string]: string | undefined;
 }
@@ -121,7 +124,13 @@ const StringUnion = <UnionType extends string>(...values: UnionType[]) => {
   );
 };
 
-export const CnsSupportedNetwork = StringUnion('mainnet', 'rinkeby');
+export const UnsSupportedNetwork = StringUnion('mainnet', 'rinkeby');
+export const EnsSupportedNetwork = StringUnion(
+  'mainnet',
+  'rinkeby',
+  'goerli',
+  'ropsten',
+);
 export const ZnsSupportedNetwork = StringUnion('mainnet');
 
 export function hasProvider(obj: any): obj is {provider: Provider} {

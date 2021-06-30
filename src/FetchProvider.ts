@@ -45,6 +45,11 @@ export default class FetchProvider implements Provider {
         'Content-Type': 'application/json',
       },
     });
+    if (response.status !== 200) {
+      throw new ResolutionError(ResolutionErrorCode.ServiceProviderError, {
+        providerMessage: `Request to ${this.url} failed with responce status ${response.status}`,
+      });
+    }
     return response.json();
   }
 }

@@ -26,13 +26,38 @@ Resolution is primarily built and maintained by
 
 Resolution supports decentralized domains across three main zones:
 
-- Crypto Name Service (CNS)
-  - `.crypto`
 - Zilliqa Name Service (ZNS)
   - `.zil`
 
+- Ethereum Name Service (ENS)
+  - `.eth`
+  - `.kred`
+  - `.xyz`
+  - `.luxe`
+
+- Unstoppable Name Service (UNS)
+  - `.crypto`
+  - `.nft`
+  - `.blockchain`
+  - `.bitcoin`
+  - `.coin`
+  - `.wallet`
+  - `.888`
+  - `.dao`
+  - `.x`
+  - ...
+
 For more information, see our detailed
 [API Referrence](https://unstoppabledomains.github.io/resolution/).
+
+### ENS support
+**Note: Ethereum Name Service requires installing additional packages 
+otherwise library throws error when trying to resolve ENS domain.**
+
+#### Required packages
+- `"bip44-constants": "^8.0.5"`
+- `"@ensdomains/address-encoder": ">= 0.1.x <= 0.2.x"`
+- `"content-hash": "^2.5.2"`
 
 ## Installing Resolution
 
@@ -64,7 +89,7 @@ yarn add @unstoppabledomains/resolution
 Create a new file in your project, `address.js`.
 
 ```javascript
-const {default: Resolution} = require('@unstoppabledomains/resolution');
+const { default: Resolution } = require('@unstoppabledomains/resolution');
 const resolution = new Resolution();
 
 function resolve(domain, currency) {
@@ -100,7 +125,7 @@ brad.zil resolves to zil1yu5u4hegy9v3xgluweg4en54zm8f8auwxu0xxj
 Create a new file in your project, `ipfs_hash.js`.
 
 ```javascript
-const {default: Resolution} = require('@unstoppabledomains/resolution');
+const { default: Resolution } = require('@unstoppabledomains/resolution');
 const resolution = new Resolution();
 
 function resolveIpfsHash(domain) {
@@ -129,7 +154,7 @@ You can access this website via a public IPFS gateway: https://gateway.ipfs.io/i
 Create a new file in your project, `custom-resolution.js`.
 
 ```javascript
-const {default: Resolution} = require('@unstoppabledomains/resolution');
+const { default: Resolution } = require('@unstoppabledomains/resolution');
 const resolution = new Resolution();
 
 function resolveCustomRecord(domain, record) {
@@ -172,6 +197,8 @@ Resolution provides zero-configuration experience by using built-in
 production-ready [Infura](http://infura.io/) endpoint by default.  
 Default Ethereum provider is free to use without restrictions and rate-limits
 for `CNS (.crypto domains)` resolution.  
+To resolve `ENS` domains on production it's recommended to change Ethereum
+provider.  
 Default provider can be changed by changing constructor options
 `new Resolution(options)` or by using one of the factory methods:
 
@@ -184,23 +211,18 @@ To see all constructor options and factory methods check
 [Unstoppable API reference](https://unstoppabledomains.github.io/resolution).
 
 ## Autoconfiguration of blockchain network
+In some scenarios system might not be flexible enough to easy distinguish between various Ethereum testnets on compile time.
+For this case Resolution library provide a special async constructor which should be waited for 
+`await Resolution.autonetwork(options)`. This method makes a JSON RPC "net_version" call to the provider to get the network id.
 
-In some scenarios system might not be flexible enough to easy distinguish
-between various Ethereum testnets on compile time. For this case Resolution
-library provide a special async constructor which should be waited for
-`await Resolution.autonetwork(options)`. This method makes a JSON RPC
-"net_version" call to the provider to get the network id.
-
-This method configures only Cns and Zns is supported only on Zilliqa mainnet
-which is going to be used in any cases. You can provide a configured provider or
-a blockchain url as in the following example:
-
+This method configures only Ens and Cns, Zns is supported only on Zilliqa mainnet which is going to be used in any cases.
+You can provide a configured provider or a blockchain url as in the following example:
 ```
 await Resolution.autonetwork({
   cns: {provider},
+  ens: {url}
 });
 ```
-
 ## Error Handling
 
 When resolution encounters an error it returns the error code instead of
@@ -242,7 +264,6 @@ or **Linux shell**).
 ### Internal config
 
 #### To update:
-
 - Network config: `$ yarn network-config:pull`
 - Supported keys: `$ yarn supported-keys:pull`
 - Both configs: `$ yarn config:pull`

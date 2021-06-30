@@ -35,7 +35,7 @@
     "docs:deploy": "yarn docs && ./deploy-docs.sh",
     "size": "yarn run sizecheck -p ./package.json -l 500 -v",
     "config:pull": "yarn network-config:pull && yarn supported-keys:pull",
-    "network-config:pull": "curl https://raw.githubusercontent.com/unstoppabledomains/dot-crypto/master/src/network-config/network-config.json -o src/config/network-config.json",
+    "network-config:pull": "curl https://raw.githubusercontent.com/unstoppabledomains/uns/main/uns-config.json -o src/config/uns-config.json",
     "supported-keys:pull": "curl https://raw.githubusercontent.com/unstoppabledomains/dot-crypto/master/src/supported-keys/supported-keys.json -o src/config/supported-keys.json",
     "prettier:fix": "prettier --write -l \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky install"
@@ -52,6 +52,7 @@
     "cns",
     ".crypto",
     "zns",
+    "ens",
     "ethereum",
     "zilliqa",
     "blockchain",
@@ -66,6 +67,7 @@
   },
   "homepage": "https://github.com/unstoppabledomains/resolution.git#readme",
   "devDependencies": {
+    "@ensdomains/address-encoder": "0.2.6",
     "@ethersproject/providers": "^5.0.2",
     "@types/bn.js": "^4.11.6",
     "@types/jest": "24.0.23",
@@ -75,7 +77,10 @@
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
     "@unstoppabledomains/sizecheck": "^4.0.0",
+    "@zilliqa-js/core": "2.3.0-alpha.0",
     "audit-ci": "^3.1.1",
+    "bip44-constants": "^8.0.5",
+    "content-hash": "^2.5.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^8.3.0",
@@ -104,6 +109,7 @@
     "@ethersproject/abi": "^5.0.1",
     "bn.js": "^4.4.0",
     "commander": "^4.1.1",
+    "ethereum-ens-network-map": "^1.0.2",
     "js-sha256": "^0.9.0",
     "js-sha3": "^0.8.0",
     "node-fetch": "^2.6.0"

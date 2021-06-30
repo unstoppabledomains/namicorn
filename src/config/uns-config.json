@@ -1,9 +1,15 @@
 {
-  "version": "1.1.0",
+  "version": "0.1.0",
   "networks": {
     "1": {
       "contracts": {
-        "Registry": {
+        "UNSRegistry": {
+          "address": "",
+          "implementation": "",
+          "legacyAddresses": [],
+          "deploymentBlock": ""
+        },
+        "CNSRegistry": {
           "address": "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe",
           "legacyAddresses": [],
           "deploymentBlock": "0x8a958b"
@@ -60,10 +66,34 @@
     },
     "4": {
       "contracts": {
-        "Registry": {
+        "UNSRegistry": {
+          "address": "0x7fb83000B8eD59D3eAD22f0D584Df3a85fBC0086",
+          "implementation": "0x0c97caecb791620c61e26c5a9754150a1cae2159",
+          "legacyAddresses": [],
+          "deploymentBlock": "0x85e628"
+        },
+        "CNSRegistry": {
           "address": "0xAad76bea7CFEc82927239415BB18D2e93518ecBB",
           "legacyAddresses": [],
           "deploymentBlock": "0x7232bc"
+        },
+        "MintingManager": {
+          "address": "0xdAAf99A920D31F4f5720e4667b12b24e54A03070",
+          "implementation": "0xf709D8b2c9881378d50653521a9fB64E45419914",
+          "legacyAddresses": [],
+          "deploymentBlock": "0x85e629"
+        },
+        "ProxyReader": {
+          "address": "0x299974AeD8911bcbd2C61262605b89F591a53E83",
+          "legacyAddresses": [
+            "0x9F19473F6a98a715176291c930558E1954fd3D1e",
+            "0x3A2e74CF832cbA3d77E72708d55370119E4323a6"
+          ],
+          "deploymentBlock": "0x85e62c"
+        },
+        "ProxyAdmin": {
+          "address": "0xaf9815005A208d1460b6fC60B4f90B9f2185E88c",
+          "deploymentBlock": "0x85e627"
         },
         "SignatureController": {
           "address": "0x66a5e3e2C27B4ce4F46BBd975270BE154748D164",
@@ -73,32 +103,31 @@
         "MintingController": {
           "address": "0x51765307AeB3Df2E647014a2C501d5324212467c",
           "legacyAddresses": [],
-          "deploymentBlock": "0x7232bf"
+          "deploymentBlock": "0x7232bf",
+          "deprecated": true
         },
         "WhitelistedMinter": {
           "address": "0xbcB32f13f90978a9e059E8Cb40FaA9e6619d98e7",
           "legacyAddresses": [],
-          "deploymentBlock": "0x7232c6"
+          "deploymentBlock": "0x7232c6",
+          "deprecated": true
         },
         "URIPrefixController": {
           "address": "0xe1d2e4B9f0518CA5c803073C3dFa886470627237",
           "legacyAddresses": [],
-          "deploymentBlock": "0x7232c0"
+          "deploymentBlock": "0x7232c0",
+          "deprecated": true
         },
         "DomainZoneController": {
           "address": "0x6f8F96A566663C1d4fEe70edD37E9b62Fe39dE5D",
           "legacyAddresses": [],
-          "deploymentBlock": "0x7232c2"
+          "deploymentBlock": "0x7232c2",
+          "deprecated": true
         },
         "Resolver": {
           "address": "0x95AE1515367aa64C462c71e87157771165B1287A",
           "legacyAddresses": [],
-          "deploymentBlock": "0x7232CF"
-        },
-        "ProxyReader": {
-          "address": "0x3A2e74CF832cbA3d77E72708d55370119E4323a6",
-          "legacyAddresses": [],
-          "deploymentBlock": "0x7232d1"
+          "deploymentBlock": "0x7232cf"
         },
         "TwitterValidationOperator": {
           "address": "0x1CB337b3b208dc29a6AcE8d11Bb591b66c5Dd83d",
@@ -108,7 +137,8 @@
         "FreeMinter": {
           "address": "0x84214215904cDEbA9044ECf95F3eBF009185AAf4",
           "legacyAddresses": [],
-          "deploymentBlock": "0x740d93"
+          "deploymentBlock": "0x740d93",
+          "deprecated": true
         }
       }
     }

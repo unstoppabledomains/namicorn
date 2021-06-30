@@ -10,12 +10,14 @@ import {
   Web3Version1Provider,
   JsonRpcResponse,
   EthersProvider,
+  ZilliqaProvider,
 } from '../types/publicTypes';
 
 export const Eip1993Factories = {
   fromWeb3Version0Provider,
   fromWeb3Version1Provider,
   fromEthersProvider,
+  fromZilliqaProvider,
 };
 
 /**
@@ -122,6 +124,34 @@ function fromEthersProvider(provider: EthersProvider): Provider {
             },
           );
         }
+      } catch (error) {
+        throw new ResolutionError(ResolutionErrorCode.ServiceProviderError, {
+          providerMessage: error.message,
+        });
+      }
+    },
+  };
+}
+
+/**
+ * Creates a Provider instance from @zilliqa-js/core Provider
+ * @param provider - provider object
+ */
+function fromZilliqaProvider(provider: ZilliqaProvider): Provider {
+  if (provider.middleware === undefined || provider.send === undefined) {
+    throw new ConfigurationError(ConfigurationErrorCode.IncorrectProvider);
+  }
+  return {
+    request: async (request: RequestArguments) => {
+      try {
+        const resp = await provider.send(
+          request.method,
+          ...((request.params as []) || []),
+        );
+        if (resp.error) {
+          throw new Error(resp.error.message);
+        }
+        return resp.result;
       } catch (error) {
         throw new ResolutionError(ResolutionErrorCode.ServiceProviderError, {
           providerMessage: error.message,

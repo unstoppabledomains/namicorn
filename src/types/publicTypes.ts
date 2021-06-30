@@ -5,13 +5,18 @@ import {
   TransactionRequest,
 } from '.';
 
-export type Api = {api: true; url?: string};
+export type Api = {api: true; url?: string; network?: number};
 
 type NamingServiceSource = {url?: string} | {provider?: Provider};
 
-export type CnsSource = NamingServiceSource & {
+export type UnsSource = NamingServiceSource & {
   network: string;
   proxyReaderAddress?: string;
+};
+
+export type EnsSource = NamingServiceSource & {
+  network: string;
+  registryAddress?: string;
 };
 
 export type ZnsSource = NamingServiceSource & {
@@ -20,19 +25,23 @@ export type ZnsSource = NamingServiceSource & {
 };
 
 export type SourceConfig = {
-  cns?: CnsSource | Api;
+  uns?: UnsSource | Api;
   zns?: ZnsSource | Api;
+  ens?: EnsSource | Api;
 };
 
 export enum NamingServiceName {
-  CNS = 'CNS',
+  UNS = 'UNS',
+  ENS = 'ENS',
   ZNS = 'ZNS',
 }
 
 export type ResolutionMethod = NamingServiceName | 'UDAPI';
 
 export type AutoNetworkConfigs = {
-  cns?: {url: string} | {provider: Provider};
+  uns?: {url: string} | {provider: Provider};
+  ens?: {url: string} | {provider: Provider};
+  zns?: {url: string} | {provider: Provider};
 };
 
 /**
@@ -63,12 +72,24 @@ export interface Web3Version1Provider {
   send: ProviderMethod;
 }
 
+export interface ZilliqaProvider {
+  middleware: any;
+  send<R = any, E = string>(method: string, ...params: any[]): Promise<any>;
+  sendBatch<R = any, E = string>(
+    method: string,
+    ...params: any[]
+  ): Promise<any>;
+  subscribe?(event: string, subscriber: any): symbol;
+  unsubscribe?(token: symbol): void;
+}
+
 /**
  * @see https://eips.ethereum.org/EIPS/eip-1193
  */
 export interface Provider {
   request: (request: RequestArguments) => Promise<unknown>;
 }
+
 type ProviderMethod = (
   payload: JsonRpcPayload,
   callback: (error: Error | null, result?: JsonRpcResponse) => void,
@@ -178,3 +199,38 @@ export type DomainData = {
   resolver: string;
   records: CryptoRecords;
 };
+
+export interface Erc721Metadata {
+  name: string;
+  description: string;
+  image: string;
+  external_url: string;
+}
+
+export type TokenUriMetadataAttribute =
+  | {
+      value: string | number;
+    }
+  | {
+      trait_type: string;
+      value: string | number;
+    }
+  | {
+      display_type:
+        | 'number'
+        | 'date'
+        | 'boost_number'
+        | 'boost_percentage'
+        | 'ranking';
+      trait_type: string;
+      value: number;
+    };
+
+export interface TokenUriMetadata extends Erc721Metadata {
+  external_link?: string;
+  image_data?: string;
+  attributes?: Array<TokenUriMetadataAttribute>;
+  background_color?: string;
+  animation_url?: string;
+  youtube_url?: string;
+}

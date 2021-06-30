@@ -1,0 +1,44 @@
+{
+  "bradCryptoMetadata": {
+    "name": "brad.crypto",
+    "description": "A .crypto blockchain domain. Use it to resolve your cryptocurrency addresses and decentralized websites.\nhttps://gateway.pinata.cloud/ipfs/QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb",
+    "external_url": "https://staging:Staging-4-Unstoppable-3-2-1@staging.unstoppabledomains.com/search?searchTerm=brad.crypto",
+    "image": "https://storage.googleapis.com/dot-crypto-metadata-api/unstoppabledomains_crypto.png",
+    "attributes": [
+      {
+        "trait_type": "domain",
+        "value": "brad.crypto"
+      },
+      {
+        "trait_type": "level",
+        "value": 2
+      },
+      {
+        "trait_type": "length",
+        "value": 4
+      },
+      {
+        "trait_type": "ADA",
+        "value": "DdzFFzCqrhsuwQKiR3CdQ1FzuPAydtVCBFTRdy9FPKepAHEoXCee2qrio975M4cEbqYwZBsWJTNyrJ8NLJmAReSwAakQEHWBEd2HvSS7"
+      },
+      {
+        "trait_type": "BTC",
+        "value": "bc1q359khn0phg58xgezyqsuuaha28zkwx047c0c3y"
+      },
+      {
+        "trait_type": "ETH",
+        "value": "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8"
+      },
+      {
+        "trait_type": "IPFS Content",
+        "value": "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb"
+      },
+      {
+        "trait_type": "type",
+        "value": "standard"
+      }
+    ],
+    "image_data": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"250px\" height=\"250px\" viewBox=\"0 0 250 250\" version=\"1.1\">\n    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->\n    <title>unstoppabledomains_dot_crypto-</title>\n    <desc>Created with Sketch.</desc>\n    <g id=\"unstoppabledomains\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n        <rect fill=\"#4C47F7\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n        <g id=\"Group-6\" transform=\"translate(70.000000, 154.000000)\">\n            <g id=\"Group\" transform=\"translate(5.000000, 43.000000)\">\n                <rect id=\"Rectangle\" stroke=\"#2FE9FF\" stroke-width=\"2.11267614\" x=\"0.260564052\" y=\"0.457746731\" width=\"100\" height=\"34\" rx=\"17\"/>\n                <text id=\".crypto\" font-family=\"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', Oxygen, Cantarell, sans-serif\" font-size=\"16\" font-weight=\"bold\" fill=\"#FFFFFF\">\n                    <tspan x=\"16.5847828\" y=\"23.4577467\">.CRYPTO</tspan>\n                </text>\n            </g>\n            <text text-anchor=\"middle\" id=\"domain\" font-family=\"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', Oxygen, Cantarell, sans-serif\" font-size=\"24\" font-weight=\"bold\" fill=\"#FFFFFF\">\n                <tspan x=\"22.5%\" y=\"26\">brad</tspan>\n            </text>\n        </g>\n        <g id=\"sign\" transform=\"translate(56.000000, 19.000000)\">\n            <polygon id=\"Rectangle-Copy-3\" fill=\"#2FE9FF\" points=\"137.000268 2.12559903 137.000268 48.8887777 -2.72848394e-13 104.154352\"/>\n            <path d=\"M111.312718,-1.42108539e-14 L111.312718,80.7727631 C111.312718,104.251482 92.1448713,123.284744 68.5001341,123.284744 C44.855397,123.284744 25.6875503,104.251482 25.6875503,80.7727631 L25.6875503,46.7631786 L51.3751006,32.734225 L51.3751006,80.7727631 C51.3751006,88.9903146 58.0838469,95.6519563 66.3595049,95.6519563 C74.6351629,95.6519563 81.3439093,88.9903146 81.3439093,80.7727631 L81.3439093,16.3671125 L111.312718,-1.42108539e-14 Z\" id=\"Path\" fill=\"#FFFFFF\"/>\n        </g>\n    </g>\n</svg>",
+    "background_color": "4C47F7"
+  }
+}

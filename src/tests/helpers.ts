@@ -9,18 +9,20 @@ import ConfigurationError, {
 import DnsRecordsError, {DnsRecordsErrorCode} from '../errors/dnsRecordsError';
 import {NamingServiceName} from '../types/publicTypes';
 
-export const MainnetUrl = 'https://mainnet.infura.io';
+export const MainnetUrl = 'https://rinkeby.infura.io';
 export const ZilliqaUrl = 'https://api.zilliqa.com';
 export const DefaultUrl = 'https://unstoppabledomains.com/api/v1';
 
 export const CryptoDomainWithoutResolver = 'twistedmusic.crypto';
 export const CryptoDomainWithTwitterVerification =
-  'ijustwannatestsomething2.crypto';
-export const CryptoDomainWithUsdtMultiChainRecords = 'udtestdev-usdt.crypto';
-export const CryptoDomainWithAllRecords =
-  'udtestdev-reseller-test-udtesting-875948372642.crypto';
+  'reseller-test-udtesting-052523593694.crypto';
+export const CryptoDomainWithUsdtMultiChainRecords =
+  'test-usdt-and-dns-records.crypto';
+export const ZilDomainWithUsdtMultiChainRecords =
+  'reseller-test-udtesting-422508414817.zil';
+export const CryptoDomainWithAllRecords = 'test-usdt-and-dns-records.crypto';
 export const CryptoDomainWithoutGunDbRecords =
-  'udtestdev-reseller-test-udtesting-875948372642.crypto';
+  'test-usdt-and-dns-records.crypto';
 
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -63,12 +65,7 @@ export function isLive(): boolean {
   return !!process.env.LIVE;
 }
 
-export function pendingInLive(): void {
-  if (isLive()) {
-    // eslint-disable-next-line no-undef
-    pending('Disabled in LIVE mode');
-  }
-}
+export const skipItInLive = isLive() ? it.skip : it;
 
 export function expectSpyToBeCalled(
   spies: jest.SpyInstance[],
@@ -150,7 +147,7 @@ export function mockAPICalls(testName: string, url = MainnetUrl): void {
     switch (METHOD) {
     case 'POST': {
       nock(url)
-        .post('/', JSON.stringify(REQUEST), undefined)
+        .post('', JSON.stringify(REQUEST), undefined)
         .reply(200, JSON.stringify(RESPONSE));
       break;
     }
@@ -170,7 +167,9 @@ export function mockAPICalls(testName: string, url = MainnetUrl): void {
  */
 export function protocolLink(
   providerProtocol: ProviderProtocol = ProviderProtocol.http,
-  namingService: NamingServiceName.CNS = NamingServiceName.CNS,
+  namingService:
+    | NamingServiceName.ENS
+    | NamingServiceName.UNS = NamingServiceName.UNS,
 ): string {
   const secret =
     process.env.UNSTOPPABLE_RESOLUTION_INFURA_PROJECTID ?? undefined;
@@ -180,8 +179,8 @@ export function protocolLink(
   }
 
   return providerProtocol === ProviderProtocol.wss
-    ? `wss://mainnet.infura.io/ws/v3/${secret}`
-    : `https://mainnet.infura.io/v3/${secret}`;
+    ? `wss://rinkeby.infura.io/ws/v3/${secret}`
+    : `https://rinkeby.infura.io/v3/${secret}`;
 }
 
 export enum ProviderProtocol {
@@ -203,10 +202,16 @@ export const caseMock = <T, U>(
 };
 
 const ethereumDefaultProviders = {
-  [NamingServiceName.CNS]: {
+  [NamingServiceName.UNS]: {
     [ProviderProtocol.http]:
-      'https://mainnet.infura.io/v3/c4bb906ed6904c42b19c95825fe55f39',
+      'https://rinkeby.infura.io/v3/c4bb906ed6904c42b19c95825fe55f39',
     [ProviderProtocol.wss]:
-      'wss://mainnet.infura.io/ws/v3/c4bb906ed6904c42b19c95825fe55f39',
+      'wss://rinkeby.infura.io/ws/v3/c4bb906ed6904c42b19c95825fe55f39',
+  },
+  [NamingServiceName.ENS]: {
+    [ProviderProtocol.http]:
+      'https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee',
+    [ProviderProtocol.wss]:
+      'wss://mainnet.infura.io/ws/v3/d423cf2499584d7fbe171e33b42cfbee',
   },
 };

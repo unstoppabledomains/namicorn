@@ -42,7 +42,7 @@ export default class Zns extends NamingService {
   readonly name: NamingServiceName = NamingServiceName.ZNS;
   readonly network: number;
   readonly url: string | undefined;
-  readonly registryAddress: string;
+  readonly registryAddr: string;
   readonly provider: Provider;
 
   constructor(source?: ZnsSource) {
@@ -58,12 +58,11 @@ export default class Zns extends NamingService {
     this.url = source['url'] || Zns.UrlMap[this.network];
     this.provider =
       source['provider'] || new FetchProvider(this.name, this.url!);
-    this.registryAddress =
+    this.registryAddr =
       source['registryAddress'] || Zns.RegistryMap[this.network];
-
-    this.checkRegistryAddress(this.registryAddress);
-    if (this.registryAddress.startsWith('0x')) {
-      this.registryAddress = toBech32Address(this.registryAddress);
+    this.checkRegistryAddress(this.registryAddr);
+    if (this.registryAddr.startsWith('0x')) {
+      this.registryAddr = toBech32Address(this.registryAddr);
     }
   }
 
@@ -107,7 +106,7 @@ export default class Zns extends NamingService {
   }
 
   namehash(domain: string): string {
-    if (!this.isSupportedDomain(domain)) {
+    if (!this.checkDomain(domain)) {
       throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
         domain,
       });
@@ -119,13 +118,8 @@ export default class Zns extends NamingService {
     return znsChildhash(parentHash, label);
   }
 
-  isSupportedDomain(domain: string): boolean {
-    const tokens = domain.split('.');
-    return (
-      !!tokens.length &&
-      tokens[tokens.length - 1] === 'zil' &&
-      tokens.every((v) => !!v.length)
-    );
+  async isSupportedDomain(domain: string): Promise<boolean> {
+    return this.checkDomain(domain);
   }
 
   async record(domain: string, key: string): Promise<string> {
@@ -170,8 +164,18 @@ export default class Zns extends NamingService {
     return Boolean(recordAddresses && recordAddresses[0]);
   }
 
+  async getTokenUri(tokenId: string): Promise<string> {
+    throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
+      methodName: 'getTokenUri',
+    });
+  }
+
   async isAvailable(domain: string): Promise<boolean> {
     return !(await this.isRegistered(domain));
+  }
+
+  async registryAddress(domain: string): Promise<string> {
+    return this.registryAddr;
   }
 
   private async getRecordsAddresses(
@@ -184,7 +188,7 @@ export default class Zns extends NamingService {
     }
 
     const registryRecord = await this.getContractMapValue(
-      this.registryAddress,
+      this.registryAddr,
       'records',
       this.namehash(domain),
     );
@@ -243,6 +247,15 @@ export default class Zns extends NamingService {
   ): Promise<any> {
     const record = await this.getContractField(contractAddress, field, [key]);
     return (record && record[key]) || null;
+  }
+
+  private checkDomain(domain: String): boolean {
+    const tokens = domain.split('.');
+    return (
+      !!tokens.length &&
+      tokens[tokens.length - 1] === 'zil' &&
+      tokens.every((v) => !!v.length)
+    );
   }
 
   private checkNetworkConfig(source: ZnsSource): void {

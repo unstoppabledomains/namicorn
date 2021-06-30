@@ -37,14 +37,27 @@ export function constructRecords(
 }
 
 export const domainExtensionToNamingServiceName = {
-  crypto: NamingServiceName.CNS,
+  crypto: NamingServiceName.UNS,
   zil: NamingServiceName.ZNS,
+  eth: NamingServiceName.ENS,
+  luxe: NamingServiceName.ENS,
+  xyz: NamingServiceName.ENS,
+  kred: NamingServiceName.ENS,
+  reverse: NamingServiceName.ENS,
 };
 
-export const findNamingServiceName = (domain: string): NamingServiceName => {
-  return (
-    domainExtensionToNamingServiceName[domain.split('.').pop() || ''] || ''
-  );
+export const findNamingServiceName = (
+  domain: string,
+): NamingServiceName | '' => {
+  const extension = domain.split('.').pop();
+
+  if (!extension) {
+    return '';
+  } else if (extension in domainExtensionToNamingServiceName) {
+    return domainExtensionToNamingServiceName[extension];
+  } else {
+    return domainExtensionToNamingServiceName.crypto;
+  }
 };
 
 export const EthereumNetworks = {

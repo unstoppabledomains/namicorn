@@ -7,6 +7,7 @@ import {
   ResolutionResponse,
   ResolutionMethod,
   NamingServiceName,
+  Api,
 } from './types/publicTypes';
 import Networking from './utils/Networking';
 import {constructRecords, findNamingServiceName, isNullAddress} from './utils';
@@ -22,20 +23,25 @@ export default class Udapi extends NamingService {
   private readonly headers: {
     [key: string]: string;
   };
+  static readonly ZnsRegistryMap = {
+    1: 'zil1jcgu2wlx6xejqk9jw3aaankw6lsjzeunx2j0jz',
+  };
+  readonly network: number;
 
-  constructor(url?: string) {
+  constructor(api?: Api) {
     super();
     this.name = 'UDAPI';
-    this.url = url || 'https://unstoppabledomains.com/api/v1';
+    this.url = api?.url || 'https://unstoppabledomains.com/api/v1';
     const DefaultUserAgent = Networking.isNode()
       ? 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
       : navigator.userAgent;
     const version = pckg.version;
     const CustomUserAgent = `${DefaultUserAgent} Resolution/${version}`;
     this.headers = {'X-user-agent': CustomUserAgent};
+    this.network = api?.network || 1;
   }
 
-  isSupportedDomain(domain: string): boolean {
+  async isSupportedDomain(domain: string): Promise<boolean> {
     throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
       methodName: 'isSupportedDomain',
     });
@@ -79,7 +85,7 @@ export default class Udapi extends NamingService {
 
   async twitter(domain: string): Promise<string> {
     const serviceName = findNamingServiceName(domain);
-    if (serviceName !== NamingServiceName.CNS) {
+    if (serviceName !== NamingServiceName.UNS) {
       throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
         domain,
         methodName: 'twitter',
@@ -164,7 +170,20 @@ export default class Udapi extends NamingService {
     return !isNullAddress(record.meta.owner);
   }
 
+  async getTokenUri(tokenId: string): Promise<string> {
+    throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
+      methodName: 'getTokenUri',
+    });
+  }
+
   async isAvailable(domain: string): Promise<boolean> {
     return !(await this.isRegistered(domain));
+  }
+
+  async registryAddress(domain: string): Promise<string> {
+    throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
+      domain,
+      methodName: 'registryAddress',
+    });
   }
 }
