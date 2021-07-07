@@ -170,6 +170,12 @@ export default class Zns extends NamingService {
     });
   }
 
+  async getDomainFromTokenId(tokenId: string): Promise<string> {
+    throw new ResolutionError(ResolutionErrorCode.UnsupportedMethod, {
+      methodName: 'getDomainFromTokenId',
+    });
+  }
+
   async isAvailable(domain: string): Promise<boolean> {
     return !(await this.isRegistered(domain));
   }

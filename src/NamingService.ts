@@ -24,6 +24,7 @@ export abstract class NamingService {
   abstract isRegistered(domain: string): Promise<boolean>;
 
   abstract getTokenUri(tokenId: string): Promise<string>;
+  abstract getDomainFromTokenId(tokenId: string): Promise<string>;
 
   abstract isAvailable(domain: string): Promise<boolean>;
   abstract registryAddress(domain: string): Promise<string>;

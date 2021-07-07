@@ -161,7 +161,7 @@
         "method": "eth_call",
         "params": [
           {
-            "data": "0xa81ce6f90f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f",
+            "data": "0xa81ce6f970702ccf2d95c2c8ff666f5e4dde0ed0e83d7d7407fff6f593d4e277aac0a40c",
             "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
           },
           "latest"
@@ -181,7 +181,7 @@
         "method": "eth_call",
         "params": [
           {
-            "data": "0xa81ce6f95c828ec285c0bf152a30a325b3963661a80cb87641d60920344caf04d4a0f31e",
+            "data": "0xa81ce6f98e3f4a48d9806259e049ea529c5be0c6433ff147ad781caf8014d196c388e1df",
             "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
           },
           "latest"
@@ -201,7 +201,7 @@
         "method": "eth_call",
         "params": [
           {
-            "data": "0xa81ce6f999140b022179d52bbdec6856ab7deae20ff32ae688e229f6c92bcc454a7b3a63",
+            "data": "0xa81ce6f99319b0a972ee595115c81afa667fc78253ff07a82fc635b39d528c759c979ebc",
             "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
           },
           "latest"
@@ -211,6 +211,335 @@
         "jsonrpc": "2.0",
         "id": 1,
         "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ],
+  "unhash": [
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f9756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x000000000000000000000000d1e5b0ff1287aa9f9a268759062e4ab08b9dacbe"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "0x8a958b",
+            "toBlock": "latest",
+            "address": "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": [
+          {
+            "address": "0xd1e5b0ff1287aa9f9a268759062e4ab08b9dacbe",
+            "blockHash": "0xd716309f77e2ab9a089dd33765652c5a45adaf08cebda1497de462c9b2487e3e",
+            "blockNumber": "0x8b344c",
+            "data": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b627261642e63727970746f000000000000000000000000000000000000000000",
+            "logIndex": "0x56",
+            "removed": false,
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9"
+            ],
+            "transactionHash": "0x4ddc930c0d511de217d6ba7d6a7dd979ab3668f33ac2cd31f20147557ff9955b",
+            "transactionIndex": "0x30"
+          }
+        ]
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f900e7a897c7a37ae79beea20a9bbb0a2a84ab2cff2f11a7e2c1912bd063407fa2",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "0x8a958b",
+            "toBlock": "latest",
+            "address": "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x00e7a897c7a37ae79beea20a9bbb0a2a84ab2cff2f11a7e2c1912bd063407fa2"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": []
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f90b680a1cb8fe02507e74d78fbd5fdeef7b7be5cb793211ad9362c5547e76ce90",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": "0x000000000000000000000000d1e5b0ff1287aa9f9a268759062e4ab08b9dacbe"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "0x8a958b",
+            "toBlock": "latest",
+            "address": "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x0b680a1cb8fe02507e74d78fbd5fdeef7b7be5cb793211ad9362c5547e76ce90"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": [
+          {
+            "address": "0xd1e5b0ff1287aa9f9a268759062e4ab08b9dacbe",
+            "blockHash": "0xd716309f77e2ab9a089dd33765652c5a45adaf08cebda1497de462c9b2487e3e",
+            "blockNumber": "0x8b344c",
+            "data": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b627261642e63727970746f000000000000000000000000000000000000000000",
+            "logIndex": "0x56",
+            "removed": false,
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9"
+            ],
+            "transactionHash": "0x4ddc930c0d511de217d6ba7d6a7dd979ab3668f33ac2cd31f20147557ff9955b",
+            "transactionIndex": "0x30"
+          }
+        ]
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f9a3524c4b8e91451ea703506a8ad50729e619c5a12e20daa60203d47cf9530190",
+
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000007fb83000B8eD59D3eAD22f0D584Df3a85fBC0086"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "0x85e628",
+            "toBlock": "latest",
+            "address": "0x7fb83000B8eD59D3eAD22f0D584Df3a85fBC0086",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0xa3524c4b8e91451ea703506a8ad50729e619c5a12e20daa60203d47cf9530190"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": [
+          {
+            "address": "0x7fb83000b8ed59d3ead22f0d584df3a85fbc0086",
+            "blockHash": "0x373e48aca6239a2a84a708092b0de01a55d0aaf6684af3a359d9db5f9d752e55",
+            "blockNumber": "0x87b2fa",
+            "data": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d7564746573746465762d6a6f686e6e7977616c6c65742e77616c6c6574000000",
+            "logIndex": "0x34",
+            "removed": false,
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0xa3524c4b8e91451ea703506a8ad50729e619c5a12e20daa60203d47cf9530190"
+            ],
+            "transactionHash": "0xeec3b1ed0cf2a13a4d1408800d1be85f7dc85b1cae820f92c1fde09476c80eed",
+            "transactionIndex": "0x1c"
+          }
+        ]
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f9051cbdc9d09ec8338a9fa2e4d140cd0be54ba83b1b85f971f2e09144c940d751",
+            "to": "0x299974aed8911bcbd2c61262605b89f591a53e83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0x0000000000000000000000007fb83000B8eD59D3eAD22f0D584Df3a85fBC0086"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "0x85e628",
+            "toBlock": "latest",
+            "address": "0x7fb83000B8eD59D3eAD22f0D584Df3a85fBC0086",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x051cbdc9d09ec8338a9fa2e4d140cd0be54ba83b1b85f971f2e09144c940d751"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": [
+          {
+            "address": "0x7fb83000b8ed59d3ead22f0d584df3a85fbc0086",
+            "blockHash": "0xdf03310676940e5e1202dd73381ac97bdd50f473c6305548e1d0e1ac45bc1ae2",
+            "blockNumber": "0x87b2f8",
+            "data": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000197564746573746465762d6a6f686e6e79636f696e2e636f696e00000000000000",
+            "logIndex": "0x22",
+            "removed": false,
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x051cbdc9d09ec8338a9fa2e4d140cd0be54ba83b1b85f971f2e09144c940d751"
+            ],
+            "transactionHash": "0x9d76f0a900d3cae87e90e2669e4306cfb9711d938e36e2d02e51a8709412b279",
+            "transactionIndex": "0x12"
+          }
+        ]
+      }
+    }
+  ],
+  "unhashGetStartingBlockTest": [
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_call",
+        "params": [
+          {
+            "data": "0xa81ce6f928a4d039972e89b7c656385632d36a87b5d24bb90a0239b308bfda396d2aa8be",
+            "to": "0x299974AeD8911bcbd2C61262605b89F591a53E83"
+          },
+          "latest"
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": "0x000000000000000000000000d1e5b0ff1287aa9f9a268759062e4ab08b9dacb2"
+      }
+    },
+    {
+      "METHOD": "POST",
+      "REQUEST": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "method": "eth_getLogs",
+        "params": [
+          {
+            "fromBlock": "earliest",
+            "toBlock": "latest",
+            "address": "0xd1e5B0Ff1287AA9F9A268759062e4Ab08b9DACb2",
+            "topics": [
+              "0xc5beef08f693b11c316c0c8394a377a0033c9cf701b8cd8afd79cecef60c3952",
+              "0x28a4d039972e89b7c656385632d36a87b5d24bb90a0239b308bfda396d2aa8be"
+            ]
+          }
+        ]
+      },
+      "RESPONSE": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": []
       }
     }
   ]

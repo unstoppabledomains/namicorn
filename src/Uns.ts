@@ -7,6 +7,7 @@ import {
   EventData,
 } from './types';
 import {default as proxyReaderAbi} from './contracts/uns/proxyReader';
+import {default as registryAbi} from './contracts/uns/registry';
 import {default as resolverInterface} from './contracts/uns/resolver';
 import ResolutionError, {ResolutionErrorCode} from './errors/resolutionError';
 import EthereumContract from './contracts/EthereumContract';
@@ -32,6 +33,7 @@ import ConfigurationError, {
   ConfigurationErrorCode,
 } from './errors/configurationError';
 import SupportedKeys from './config/supported-keys.json';
+import {Interface} from '@ethersproject/abi';
 
 /**
  * @internal
@@ -255,24 +257,72 @@ export default class Uns extends NamingService {
     return !(await this.isRegistered(domain));
   }
 
-  async registryAddress(domain: string): Promise<string> {
-    if (!this.checkDomain(domain)) {
+  async registryAddress(domainOrNamehash: string): Promise<string> {
+    if (
+      !this.checkDomain(domainOrNamehash, domainOrNamehash.startsWith('0x'))
+    ) {
       throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
-        domain,
+        domain: domainOrNamehash,
       });
     }
-
-    const tld = domain.split('.').pop();
-    const [address] = await this.readerContract.call('registryOf', [
-      this.namehash(tld!),
-    ]);
-
+    const namehash = domainOrNamehash.startsWith('0x')
+      ? domainOrNamehash
+      : this.namehash(domainOrNamehash);
+    const [address] = await this.readerContract.call('registryOf', [namehash]);
     if (address === NullAddress) {
-      throw new ResolutionError(ResolutionErrorCode.UnsupportedDomain, {
-        domain,
+      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+        domain: domainOrNamehash,
       });
     }
     return address;
+  }
+
+  async getDomainFromTokenId(tokenId: string): Promise<string> {
+    const registryAddress = await this.registryAddress(tokenId);
+    const registryContract = new EthereumContract(
+      registryAbi,
+      registryAddress,
+      this.provider,
+    );
+    const startingBlock = this.getStartingBlockFromRegistry(registryAddress);
+    const newURIEvents = await registryContract.fetchLogs(
+      'NewURI',
+      tokenId,
+      startingBlock,
+    );
+    if (!newURIEvents || newURIEvents.length === 0) {
+      throw new ResolutionError(ResolutionErrorCode.UnregisteredDomain, {
+        domain: `with tokenId ${tokenId}`,
+      });
+    }
+    const rawData = newURIEvents[newURIEvents.length - 1].data;
+    const decoded = Interface.getAbiCoder().decode(['string'], rawData);
+    return decoded[decoded.length - 1];
+  }
+
+  private getStartingBlockFromRegistry(registryAddress: string): string {
+    const contractDetails = Object.values(UnsConfig?.networks).reduce(
+      (acc, network) => {
+        const contracts = network.contracts;
+
+        return [
+          ...acc,
+          ...Object.values(contracts).map((c) => ({
+            address: c.address,
+            deploymentBlock: c.deploymentBlock,
+          })),
+        ];
+      },
+      [],
+    );
+
+    const contractDetail = contractDetails.find(
+      (detail) => detail.address === registryAddress,
+    );
+    if (!contractDetail || contractDetail?.deploymentBlock === '0x0') {
+      return 'earliest';
+    }
+    return contractDetail.deploymentBlock;
   }
 
   private async getVerifiedData(
@@ -383,7 +433,10 @@ export default class Uns extends NamingService {
     return lastResetEvent?.blockNumber || defaultStartingBlock;
   }
 
-  private checkDomain(domain: string): boolean {
+  private checkDomain(domain: string, passIfTokenID = false): boolean {
+    if (passIfTokenID) {
+      return true;
+    }
     const tokens = domain.split('.');
     return (
       !!tokens.length &&
